@@ -28,7 +28,7 @@ const emits = defineEmits<{
       :value="coupon"
       :size="Math.max(coupon.length, 1)"
       class="coupon__input"
-      @input="event => emits('update:coupon', event.target.value)"
+      @input="event => emits('update:coupon', (event.target as HTMLInputElement)?.value)"
     >
 
   </div>

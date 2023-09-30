@@ -12,10 +12,37 @@ const isEmailInCheck = ref(false);
 
 const isFailed = ref(false);
 
+const passwordHidden = ref(true);
+
 const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordRepeat = ref('');
+
+const isEmailValid = computed(() => {
+  // check if email is valid
+  if (email.value === '') {
+    return true;
+  }
+  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value);
+});
+
+const isPasswordValid = computed(() => {
+  // check if password is valid
+  if (password.value === '') {
+    return true;
+  }
+  // Your password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number'
+  // check if password is valid
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password.value);
+});
+
+const isPasswordRepeated = computed(() => {
+  if (password.value === '') {
+    return true;
+  }
+  return password.value === passwordRepeat.value;
+});
 
 
 const isSubmitReady = computed(() => {
@@ -23,14 +50,10 @@ const isSubmitReady = computed(() => {
     && email.value !== ''
     && password.value !== ''
     && passwordRepeat.value !== '';
-
-  const isEmailValid = /^.+@.+$/g.test(email.value);
-
-  const isPasswordRepeated = password.value === passwordRepeat.value;
-
   return isNotEmpty
-    && isEmailValid
-    && isPasswordRepeated;
+    && isEmailValid.value
+    && isPasswordValid.value
+    && isPasswordRepeated.value;
 });
 
 
@@ -38,6 +61,7 @@ onBeforeUnmount(() => {
   isEmailInCheck.value = false;
 });
 
+const errorMessage = ref("");
 
 async function submit() {
   if (!isSubmitReady) {
@@ -45,15 +69,25 @@ async function submit() {
     return;
   }
 
-  const response = await registerUser(
-    email.value.trim(),
-    username.value.trim(),
-    password.value.trim(),
-  );
+  try {
+    const {data, error} = await registerUser(
+      email.value.trim(),
+      username.value.trim(),
+      password.value.trim(),
+    );
+    console.log(data.value);
 
-  if (response === null) {
-    isEmailInCheck.value = true;
-    isFailed.value = false;
+    if (error.value === null) {
+      isEmailInCheck.value = true;
+      isFailed.value = false;
+    } else {
+      isFailed.value = true;
+      errorMessage.value = error.value;
+    }
+  }
+  catch (e) {
+    console.log(e);
+    isFailed.value = true;
   }
 }
 
@@ -72,20 +106,34 @@ async function submit() {
 
       <div class="registration__section">
         <p class="registration__title">Email</p>
-        <input v-model="email" type="email" placeholder="Enter your email" class="registration__field">
+        <input v-model="email" type="email" placeholder="Enter your email" class="registration__field" :class="{ 'registration__field_invalid': !isEmailValid }">
+        <p v-if="!isEmailValid" class="registration__error">
+          Please enter a valid email
+        </p>
       </div>
 
       <div class="registration__section">
         <p class="registration__title">Password</p>
-        <input v-model="password" type="password" placeholder="••••••••" class="registration__field">
+        <div style="width:100%; flex-direction: row; align-items: center">
+          <input v-model="password" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field" :class="{ 'registration__field_invalid': !isPasswordValid }" style="width:100%">
+          <EyeIcon height="4rem" :is-closed="!passwordHidden" style="margin-left: -4.5rem; vertical-align: middle; margin-top: -0.5%; align-self:stretch" @click="passwordHidden = !passwordHidden"/>
+          <!-- <ImageIcon style="margin-left: -2%;" @click="passwordHidden = !passwordHidden"/> -->
+        </div>
+        <p v-if="!isPasswordValid" class="registration__error">
+        Your password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number
+        </p>
       </div>
 
       <div class="registration__section">
         <p class="registration__title">Repeat password</p>
-        <input v-model="passwordRepeat" type="password" placeholder="••••••••" class="registration__field">
+        <input v-model="passwordRepeat" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field" :class="{ 'registration__field_invalid': !isPasswordRepeated }">
+        <p v-if="!isPasswordRepeated" class="registration__error">
+        Passwords do not match
+        </p>
       </div>
 
       <button
+        :disabled="!isSubmitReady"
         :class="['registration__sign-up', {'registration__sign-up_disabled': !isSubmitReady}]"
         @click="submit"
       >
@@ -100,7 +148,7 @@ async function submit() {
       </p>
 
       <p v-if="isFailed" class="registration__error">
-        Something went wrong. Please check your info or try again later.
+        Something went wrong. Please check your info or try again later. {{ errorMessage }}
       </p>
 
     </section>
@@ -148,6 +196,10 @@ async function submit() {
     &:focus {
       outline-color: var(--dark-color);
     }
+  }
+  
+  &__field_invalid {
+    border-color: red;
   }
 
   &__sign-up {

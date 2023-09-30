@@ -15,5 +15,5 @@ export default async function (email: string, username: string, password: string
 
   await refresh();
 
-  return data.value;
+  return { data, error };
 }

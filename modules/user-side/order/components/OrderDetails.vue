@@ -8,8 +8,10 @@ defineProps<{
   quantities: {[i: number]: number};
 }>();
 
-
-const currencyMap = {
+type CurrencyMapType = {
+  [key: string]: string;
+}
+const currencyMap: CurrencyMapType = {
   'eur': '€',
   '€': '€',
 };

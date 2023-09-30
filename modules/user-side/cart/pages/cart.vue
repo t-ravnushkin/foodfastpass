@@ -23,8 +23,13 @@ const error = ref(false);
 
 async function handlePostOrder() {
 
-  const response = await postOrder(coupon.value,
+  const { response, requestError } = await postOrder(coupon.value,
     currentTimeslot.value.start);
+
+  if (requestError !== undefined || response == "-1") {
+    error.value = true;
+    return;
+  }
 
   clientSecret.value = response ?? '';
 

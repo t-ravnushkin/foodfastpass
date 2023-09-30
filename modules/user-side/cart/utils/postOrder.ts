@@ -1,4 +1,4 @@
-export default async function (coupon: string, timeSlot: string): Promise<string | undefined> {
+export default async function (coupon: string, timeSlot: string): Promise<any>  {
 
   const token = useAuthToken();
 
@@ -19,7 +19,7 @@ export default async function (coupon: string, timeSlot: string): Promise<string
   const restaurantName = Object.values(cart.value)[0].dish.restaurantName;
 
 
-  const { data } = await useCustomFetch(
+  const { data, error } = await useCustomFetch(
     '/order/CreateOrder/',
     {
       method: 'POST',
@@ -38,5 +38,5 @@ export default async function (coupon: string, timeSlot: string): Promise<string
   // @ts-ignore
   const clientSecret: string = data.value['client_secret'] ?? '';
 
-  return clientSecret;
+  return {clientSecret, error};
 }

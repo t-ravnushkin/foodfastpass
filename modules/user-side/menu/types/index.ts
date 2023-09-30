@@ -5,7 +5,7 @@ interface Categories {
 interface Dish {
   id: number;
   name: string;
-  price: string;
+  price: number;
   priceValue: number;
   currency: string;
   images: string[];
@@ -45,4 +45,4 @@ interface RawDish {
   menuType: string[];
 }
 
-export { Categories, Dish, RawDish, FoodProperties };
+export type { Categories, Dish, RawDish, FoodProperties };

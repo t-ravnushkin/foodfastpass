@@ -12,6 +12,7 @@ const isSubmitReady = computed(() => {
   return isNotEmpty;
 });
 
+const errorMessage = ref('');
 
 function submit() {
   if (!isSubmitReady) {
@@ -19,16 +20,16 @@ function submit() {
     return;
   }
 
-  const result = getUserToken(username.value, password.value).then(() => {
+  getUserToken(username.value, password.value).then(() => {
     isFailed.value = false;
     navigateTo('/');
-  });
-
-  if (!(result ?? false)) {
+  }).catch((e) => {
     isFailed.value = true;
-    return;
-  }
+    errorMessage.value = e;
+  });
 }
+
+const passwordHidden = ref(true);
 
 </script>
 
@@ -42,7 +43,10 @@ function submit() {
 
     <div class="registration__section">
       <p class="registration__title">Password</p>
-      <input v-model="password" type="password" placeholder="••••••••" class="registration__field">
+      <div style="width:100%; flex-direction: row; align-items: center">
+        <input style="width:100%" v-model="password" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field">
+        <EyeIcon height="4rem" :is-closed="!passwordHidden" style="margin-left: -4.5rem; vertical-align: middle; margin-top: -0.5%; align-self:stretch" @click="passwordHidden = !passwordHidden"/>
+      </div>
     </div>
 
     <button
@@ -52,18 +56,17 @@ function submit() {
       Sign in
     </button>
 
+    <p v-if="isFailed" class="registration__error">
+      Something went wrong. Please check your info or try again later. {{ errorMessage }}
+    </p>
+
     <NuxtLink href="/registration" class="registration__link">
-      Don't have an account yet? Sign up.
+      Don't have an account yet? Sign up
     </NuxtLink>
 
     <NuxtLink href="/request_reset" class="registration__link">
       Forgot your password?
     </NuxtLink>
-
-    <p v-if="isFailed" class="registration__error">
-      Something went wrong. Please check your info or try again later.
-    </p>
-
   </section>
 </template>
 
