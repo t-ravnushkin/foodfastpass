@@ -18,6 +18,25 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordRepeat = ref('');
+const usernameErrors = ref(new Array<string>());
+const haveUsernameErrors = computed(() => usernameErrors.value.length > 0);
+const emailErrors = ref(new Array<string>());
+const haveEmailErrors = computed(() => emailErrors.value.length > 0);
+const passwordErrors = ref(new Array<string>());
+const havePasswordErrors = computed(() => passwordErrors.value.length > 0);
+
+watch(username, () => {
+  usernameErrors.value = [];
+  isEmailInCheck.value = false;
+});
+watch(email, () => {
+  emailErrors.value = [];
+  isEmailInCheck.value = false;
+});
+watch(password, () => {
+  passwordErrors.value = [];
+  isEmailInCheck.value = false;
+});
 
 const isEmailValid = computed(() => {
   // check if email is valid
@@ -70,20 +89,55 @@ async function submit() {
   }
 
   try {
-    const {data, error} = await registerUser(
-      email.value.trim(),
-      username.value.trim(),
-      password.value.trim(),
-    );
-    console.log(data.value);
+    const {data, error} = await useCustomFetch('/auth/users/', {
+      method: 'POST',
+      body: {
+        email: email.value,
+        username: username.value,
+        password: password.value,
+        re_password: passwordRepeat.value,
+      },
+      onResponse: ({ request, response, options }) => {
+        if (!response.ok)
+          return;
+        isEmailInCheck.value = true;
+      },
+      onResponseError: ({ request, response, options }) => {
+        if (response._data.detail === 'User with this username already exists.') {
+          usernameErrors.value = ['User with this username already exists.'];
+        }
+        else {
+          usernameErrors.value = [];
+        }
+        if (response._data[0] === 'User with this email already exists') {
+          emailErrors.value = ['User with this email already exists.'];
+        }
+        else {
+          emailErrors.value = [];
+        }
+        if (response._data.password !== undefined) {
+          passwordErrors.value = response._data.password;
+        }
+        else {
+          passwordErrors.value = [];
+        }
+      }
+    })
+    // const {data, error, pending} = await registerUser(
+    //   email.value.trim(),
+    //   username.value.trim(),
+    //   password.value.trim(),
+    // );
 
-    if (error.value === null) {
-      isEmailInCheck.value = true;
-      isFailed.value = false;
-    } else {
-      isFailed.value = true;
-      errorMessage.value = error.value;
-    }
+    // if (error.value === null) {
+    //   isEmailInCheck.value = true;
+    //   isFailed.value = false;
+    // } else {
+    //   console.log(data.value);
+    //   console.log(error.value);
+    //   isFailed.value = true;
+    //   errorMessage.value = error.value;
+    // }
   }
   catch (e) {
     console.log(e);
@@ -101,12 +155,18 @@ async function submit() {
 
       <div class="registration__section">
         <p class="registration__title">Username</p>
-        <input v-model="username" type="text" placeholder="Enter your username" class="registration__field">
+        <input v-model="username" type="text" placeholder="Enter your username" class="registration__field" :class="{ 'registration__field_invalid': haveUsernameErrors }">
+        <p v-for="usernameError in usernameErrors" class="registration__error">
+          {{ usernameError }}
+        </p>
       </div>
 
       <div class="registration__section">
         <p class="registration__title">Email</p>
-        <input v-model="email" type="email" placeholder="Enter your email" class="registration__field" :class="{ 'registration__field_invalid': !isEmailValid }">
+        <input v-model="email" type="email" placeholder="Enter your email" class="registration__field" :class="{ 'registration__field_invalid': !isEmailValid || haveEmailErrors }">
+        <p v-for="emailError in emailErrors" class="registration__error">
+          {{ emailError }}
+        </p>
         <p v-if="!isEmailValid" class="registration__error">
           Please enter a valid email
         </p>
@@ -115,10 +175,13 @@ async function submit() {
       <div class="registration__section">
         <p class="registration__title">Password</p>
         <div style="width:100%; flex-direction: row; align-items: center">
-          <input v-model="password" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field" :class="{ 'registration__field_invalid': !isPasswordValid }" style="width:100%">
+          <input v-model="password" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field" :class="{ 'registration__field_invalid': !isPasswordValid || havePasswordErrors }" style="width:100%">
           <EyeIcon height="4rem" :is-closed="!passwordHidden" style="margin-left: -4.5rem; vertical-align: middle; margin-top: -0.5%; align-self:stretch" @click="passwordHidden = !passwordHidden"/>
           <!-- <ImageIcon style="margin-left: -2%;" @click="passwordHidden = !passwordHidden"/> -->
         </div>
+        <p v-for="passwordError in passwordErrors" class="registration__error">
+          {{ passwordError }}
+        </p>
         <p v-if="!isPasswordValid" class="registration__error">
         Your password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number
         </p>
@@ -133,8 +196,8 @@ async function submit() {
       </div>
 
       <button
-        :disabled="!isSubmitReady"
-        :class="['registration__sign-up', {'registration__sign-up_disabled': !isSubmitReady}]"
+        :disabled="!isSubmitReady || isEmailInCheck"
+        :class="['registration__sign-up', {'registration__sign-up_disabled': !isSubmitReady || isEmailInCheck}]"
         @click="submit"
       >
         Sign up
