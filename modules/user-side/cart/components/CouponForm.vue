@@ -1,41 +1,41 @@
 <script setup lang="ts">
-
 defineProps<{
   coupon: string;
+  error: boolean;
+  disabled: boolean;
+  success: boolean;
 }>();
 
 const emits = defineEmits<{
-  'update:coupon': [value: string];
+  "update:coupon": [value: string];
+  checkPromocode: [];
 }>();
-
 </script>
 
 <template>
   <div class="coupon">
+    <label for="coupon" class="coupon__label"> Promocode </label>
 
-    <label
-      for="coupon"
-      class="coupon__label"
-    >
-      Coupon
-    </label>
-
-    <input
-      type="text"
-      name="coupon"
-      id="coupon"
-      placeholder="coupon"
-      :value="coupon"
-      :size="Math.max(coupon.length, 1)"
-      class="coupon__input"
-      @input="event => emits('update:coupon', (event.target as HTMLInputElement)?.value)"
-    >
-
+    <div style="width:70%;display:flex;justify-content: end;">
+      <input
+        type="text"
+        name="coupon"
+        id="coupon"
+        placeholder="promocode"
+        :value="coupon"
+        :size="Math.max(coupon.length, 1)"
+        class="coupon__input"
+        :style="{
+          'border-color': error ? 'var(--red-color)' : (success ? 'var(--green-color)' : ''),
+        }"
+        @input="event => emits('update:coupon', (event.target as HTMLInputElement)?.value)"
+      />
+      <button class="coupon__promocode_button" @click="emits('checkPromocode')" :class="{ 'coupon__promocode_button_disabled': disabled }" :disabled="disabled">Check promocode</button>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .coupon {
   width: 100%;
   display: flex;
@@ -48,8 +48,9 @@ const emits = defineEmits<{
   }
 
   &__input {
-    min-width: 6rem;
+    min-width: 20%;
     max-width: 100%;
+    height: 40px;
 
     padding: 0.2rem 0.8rem;
 
@@ -63,6 +64,33 @@ const emits = defineEmits<{
       outline: none;
     }
   }
-}
 
+  &__promocode_button {
+    grid-area: button;
+
+    width: 15%;
+    height: 40px;
+    margin-left: 10px;
+    // padding: 1.2rem 2rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+
+    color: var(--white-color);
+
+    border: none;
+    border-radius: 0.8rem;
+    background: var(--dark-color);
+
+    font: 500 normal 1.8rem/1.5 Inter, sans-serif;
+
+    transition: all ease 0.2s;
+
+    &_disabled {
+      background: var(--medium-color);
+    }
+  }
+}
 </style>

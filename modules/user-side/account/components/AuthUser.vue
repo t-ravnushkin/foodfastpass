@@ -3,6 +3,10 @@
 const username = ref('');
 const password = ref('');
 
+watch([username, password], () => {
+  isFailed.value = false;
+});
+
 const isFailed = ref(false);
 
 const isSubmitReady = computed(() => {
@@ -20,13 +24,31 @@ function submit() {
     return;
   }
 
-  getUserToken(username.value, password.value).then(() => {
-    isFailed.value = false;
-    navigateTo('/');
-  }).catch((e) => {
-    isFailed.value = true;
-    errorMessage.value = e;
+  const { data, error } = useCustomFetch('/auth/jwt/create/', {
+    method: 'POST',
+    body: {
+      username: username.value,
+      password: password.value,
+    },
+    headers: {
+      'Host': "foodfastpass.ie",
+      'Origin': "foodfastpass.ie",
+    },
+    onResponseError: ({ request, response, options }) => {
+      console.log(response);
+      errorMessage.value = response._data.detail;
+    }
   });
+  if (error.value) {
+    isFailed.value = true;
+  }
+  else {
+    isFailed.value = false;
+    // @ts-ignore
+    const token: string = data.value?.access;
+    localStorage.setItem('foodfastpass_user_token', token);
+    navigateTo('/');
+  }
 }
 
 const passwordHidden = ref(true);
@@ -57,7 +79,7 @@ const passwordHidden = ref(true);
     </button>
 
     <p v-if="isFailed" class="registration__error">
-      Something went wrong. Please check your info or try again later. {{ errorMessage }}
+      {{ errorMessage }}
     </p>
 
     <NuxtLink href="/registration" class="registration__link">

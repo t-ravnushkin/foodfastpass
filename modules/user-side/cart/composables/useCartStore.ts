@@ -9,7 +9,7 @@ interface Cart {
 }
 
 const cart = useSessionStorage<Cart>('cart', {});
-
+const discount = ref(0);
 
 function add(dish: Dish) {
   cart.value.hasOwnProperty(dish.id) ?
@@ -21,7 +21,7 @@ function remove(dish: Dish) {
   if (cart.value.hasOwnProperty(dish.id)
     && cart.value[dish.id].quantity > 0)
     cart.value[dish.id].quantity--;
-  
+
   if (cart.value[dish.id].quantity === 0)
     delete cart.value[dish.id];
 }
@@ -31,20 +31,35 @@ function refresh() {
     delete cart.value[dishId]
 }
 
+function calcPriceSum(): number {
+  if (Object.keys(cart.value).length == 0)
+    return 0;
+  let sum = 0;
+  for (const position in cart.value)
+    sum += cart.value[position].quantity * cart.value[position].dish?.priceValue;
+  return sum;
+}
+
 function priceSum(): string {
   if (Object.keys(cart.value).length == 0)
     return '0';
 
-  let sum = 0;
+  let sum = calcPriceSum();
 
   let currency = cart.value[
     Number(Object.keys(cart.value)[0])
-    ].dish.currency;
+  ].dish.currency;
 
-  for (const position in cart.value)
-    sum += cart.value[position].quantity * cart.value[position].dish?.priceValue;
+  return currency + String(Number(sum).toFixed(2));
+}
 
-
+function discountedPriceSum(): string {
+  if (Object.keys(cart.value).length == 0)
+    return '0';
+  let sum = calcPriceSum() * (1 - discount.value / 100);
+  let currency = cart.value[
+    Number(Object.keys(cart.value)[0])
+  ].dish.currency;
   return currency + String(Number(sum).toFixed(2));
 }
 
@@ -97,10 +112,12 @@ function isCheckoutReady(): boolean {
 export default function () {
   return {
     cart,
+    discount,
     add,
     remove,
     priceSum,
     isCheckoutReady,
+    discountedPriceSum,
     refresh
   };
 }

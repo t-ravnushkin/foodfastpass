@@ -1,4 +1,4 @@
-export default async function (coupon: string, timeSlot: string): Promise<any>  {
+export default async function (coupon: string, timeSlot: string): Promise<any> {
 
   const token = useAuthToken();
 
@@ -24,19 +24,20 @@ export default async function (coupon: string, timeSlot: string): Promise<any>  
     {
       method: 'POST',
       body: {
-        promocode: coupon.toUpperCase(),
+        promocode: coupon,
         timeSlot,
         restaurantName,
         cart: parsedCart,
       },
       headers: {
-        Authorization: `Bearer ${ token }`,
+        Authorization: `Bearer ${token}`,
       },
     },
   );
 
   // @ts-ignore
-  const clientSecret: string = data.value['client_secret'] ?? '';
+  const response: string = data.value.client_secret ?? '';
+  const requestError = error.value;
 
-  return {clientSecret, error};
+  return { response, requestError };
 }

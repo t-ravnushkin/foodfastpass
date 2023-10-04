@@ -4,9 +4,13 @@ const props = defineProps<{
   dishId: number;
 }>();
 
-const {cart, add, remove} = useCartStore();
+const {cart, discount, add, remove} = useCartStore();
 
 const dish = cart.value[props.dishId].dish;
+
+function smth() {
+  console.log(dish.price);
+}
 
 </script>
 
@@ -21,7 +25,8 @@ const dish = cart.value[props.dishId].dish;
 
     <p class="dish__title">{{dish.name}}</p>
 
-    <p class="dish__price">{{dish.price}}</p>
+    <p v-if="!discount" class="dish__price">{{dish.currency}}{{(dish.priceValue * cart[dishId].quantity).toFixed(2)}}</p>
+    <p v-else class="dish__price"><s>{{dish.currency}}{{(dish.priceValue * cart[dishId].quantity).toFixed(2)}}</s>{{dish.currency}}{{((dish.priceValue * (1 - discount / 100)) * cart[dishId].quantity).toFixed(2)}}</p>
 
     <div class="button-group">
       <button class="button-group__button" @click="remove(dish)">-</button>

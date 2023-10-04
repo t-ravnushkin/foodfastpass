@@ -3,6 +3,7 @@
 const props = defineProps<{
   totalPrice: string;
   readyForCheckout: boolean;
+  discountedPrice: string;
 }>();
 
 const emits = defineEmits<{
@@ -17,7 +18,8 @@ const emits = defineEmits<{
 
     <p class="footer__total">Total</p>
 
-    <p class="footer__price">{{ totalPrice }}</p>
+    <p v-if="!discountedPrice" class="footer__price">{{ totalPrice }}</p>
+    <p v-else class="footer__price"><s>{{ totalPrice }}</s>   {{ discountedPrice }}</p>
 
     <button
       :class="['footer__checkout-button', {'footer__checkout-button_disabled': !readyForCheckout}]"

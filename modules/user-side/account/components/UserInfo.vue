@@ -15,7 +15,7 @@ function logOut() {
     <section class="info">
 
       <div class="info__section">
-        <p class="info__title">Username</p>
+        <p class="info__title">Full name</p>
         <p class="info__value">{{ userInfo?.username }}</p>
       </div>
 
