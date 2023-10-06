@@ -17,8 +17,8 @@ async function submit() {
 
   const { result, error } = await requestPasswordReset(email.value);
 
-  if (error.value !== null) {
-    console.log(error);
+  if (error.value) {
+    console.log(error.value);
     isFailed.value = true;
     isEmailInCheck.value = false;
     return;
