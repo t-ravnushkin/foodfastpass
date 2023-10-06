@@ -3,7 +3,7 @@ import { Order } from '~/modules/user-side/order/types';
 
 export default async function (): Promise<Order[] | undefined> {
 
-  const token= useAuthToken();
+  const token = useAuthToken();
 
   if (token.length === 0) {
     navigateTo('/account');
@@ -15,12 +15,11 @@ export default async function (): Promise<Order[] | undefined> {
     {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${ token }`,
+        Authorization: `Bearer ${token}`,
       },
     },
   );
 
-  await refresh();
 
   console.log(data.value)
 

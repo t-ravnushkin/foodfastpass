@@ -1,4 +1,4 @@
-import type { Categories } from '~/modules/menu/types';
+import type { Categories } from '..//types';
 
 
 const categories = reactive<Categories>({});

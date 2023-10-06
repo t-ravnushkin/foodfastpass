@@ -25,6 +25,9 @@ const error = ref(false);
 const promocodeError = ref(false);
 const promocodeSuccess = ref(false);
 
+const wrongTimeError = ref(false);
+const onConfirmation = ref(false);
+
 async function checkPromocode() {
   const { data, error } = await useCustomFetch("/order/PromoCodeInfo/", {
     method: "POST",
@@ -43,19 +46,20 @@ async function checkPromocode() {
 }
 
 watch(coupon, () => {
-promocodeError.value = false;
-promocodeSuccess.value = false;
+  promocodeError.value = false;
+  promocodeSuccess.value = false;
+  discount.value = 0;
 });
 
 async function handlePostOrder() {
+  wrongTimeError.value = false;
+  error.value = false;
   const { response, requestError } = await postOrder(
     coupon.value,
     currentTimeslot.value.start
   );
-  console.log(response);
-  console.log(requestError);
   if (requestError !== null || response === "-1") {
-    error.value = true;
+    wrongTimeError.value = true;
     return;
   }
 
@@ -91,7 +95,13 @@ async function handlePostOrder() {
 
       <TimeSlots v-model:time-slot="currentTimeslot" />
 
-      <CouponForm v-model:coupon="coupon" :error="promocodeError" :success="promocodeSuccess" @check-promocode="checkPromocode" :disabled="promocodeSuccess || promocodeError" />
+      <CouponForm
+        v-model:coupon="coupon"
+        :error="promocodeError"
+        :success="promocodeSuccess"
+        @check-promocode="checkPromocode"
+        :disabled="promocodeSuccess || promocodeError"
+      />
 
       <p class="cart__instructions">
         Every dish in the order must be ordered at the same restaurant and
@@ -102,15 +112,19 @@ async function handlePostOrder() {
         Sorry, we can't proceed now. Please check your card number or try again
         later.
       </p>
+      <p v-if="wrongTimeError" class="cart__error">
+        Order can’t be placed because it contains products from different menus.
+      </p>
 
       <StripeForm ref="stripeForm" />
 
       <CartFooter
         :total-price="priceSum()"
-        :discounted-price="discount ? discountedPriceSum(): ''"
+        :discounted-price="discount ? discountedPriceSum() : ''"
         :ready-for-checkout="isCheckoutReady()"
         @submit="handlePostOrder"
       />
+
     </article>
   </client-only>
 </template>

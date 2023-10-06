@@ -1,13 +1,13 @@
 import type { Dish } from '~/modules/user-side/menu/types';
 
 
-const diets = [ 'Vegan', 'Vegetarian', 'Pescatarian' ];
+const diets = ['Vegan', 'Vegetarian', 'Pescetarian'];
 
-const allergens = [ 'Diary', 'Gluten/Wheat', 'Shellfish',
-  'Eggs', 'Soya', 'Peanut', 'Nuts', 'Celery', 'Mustard', 'Lupin',
-  'Sulphites', 'Molluscs', 'Fish', 'Sesame' ];
+const allergens = ['Dairy', 'Gluten/Wheat', 'Shellfish',
+  'Eggs', 'Soya', 'Peanuts', 'Nuts', 'Celery', 'Mustard', 'Lupin',
+  'Sulphites', 'Molluscs', 'Fish', 'Sesame'];
 
-const mealTypes = [ 'Breakfast', 'Lunch', 'Dinner' ];
+const mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
 
 
 const chosenDiets = reactive<string[]>([]);
@@ -23,7 +23,7 @@ const filtersChange = createEventHook();
 
 
 watchDeep(
-  () => ([ chosenDiets, chosenAllergens, chosenRating, chosenMealType ]),
+  () => ([chosenDiets, chosenAllergens, chosenRating, chosenMealType]),
   () => filtersChange.trigger(null),
 );
 

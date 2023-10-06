@@ -111,7 +111,12 @@ async function submit() {
         } else {
           usernameErrors.value = [];
         }
-        if (response._data[0] === "User with this email already exists") {
+        if (response._data.detail === "Invalid email address.") {
+          emailErrors.value = ["Invalid email address."];
+          flag = true;
+        } else if (
+          response._data[0] === "User with this email already exists"
+        ) {
           emailErrors.value = ["User with this email already exists."];
           flag = true;
         } else {
@@ -124,7 +129,7 @@ async function submit() {
           passwordErrors.value = [];
         }
         if (!flag && response._data !== undefined) {
-          errorMessage.value = response._data;
+          errorMessage.value = response._data.detail;
           isFailed.value = true;
         }
       },
@@ -257,7 +262,6 @@ async function submit() {
       </p>
 
       <p v-if="isFailed" class="registration__error">
-        Something went wrong. Please check your info or try again later.
         {{ errorMessage }}
       </p>
     </section>

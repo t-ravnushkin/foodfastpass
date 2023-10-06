@@ -44,12 +44,12 @@ export default defineNuxtConfig({
     '~/modules/b-o-h-side/auth',
     '~/modules/b-o-h-side/orders',
   ],
-  nitro: {
-    prerender: {
-      routes: [ '/' ],
-      ignore: [ '/menu', '/confirm' ],
-    },
-  },
+  // nitro: {
+  //   prerender: {
+  //     routes: [ '/' ],
+  //     ignore: [ '/menu', '/confirm' ],
+  //   },
+  // },
   pwa: {
     registerType: 'autoUpdate',
     manifest: {

@@ -34,9 +34,10 @@ export default async function (coupon: string, timeSlot: string): Promise<any> {
       },
     },
   );
+  console.log(data.value);
 
   // @ts-ignore
-  const response: string = data.value.client_secret ?? '';
+  const response: string = (data.value == "-1" ? "-1" : (data.value.client_secret ?? ''));
   const requestError = error.value;
 
   return { response, requestError };

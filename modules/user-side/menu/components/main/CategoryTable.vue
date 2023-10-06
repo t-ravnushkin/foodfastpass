@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const table = ref();
 
-const { areFiltersApproved } = useFilters();
+const { chosenAllergens, areFiltersApproved } = useFilters();
 
 const { scrollSetCategory } = useCategoryScrollObserver();
 

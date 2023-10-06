@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
-const username = ref('');
-const password = ref('');
+const username = ref("");
+const password = ref("");
 
 watch([username, password], () => {
   isFailed.value = false;
@@ -10,13 +9,12 @@ watch([username, password], () => {
 const isFailed = ref(false);
 
 const isSubmitReady = computed(() => {
-  const isNotEmpty = username.value !== ''
-    && password.value !== '';
+  const isNotEmpty = username.value !== "" && password.value !== "";
 
   return isNotEmpty;
 });
 
-const errorMessage = ref('');
+const errorMessage = ref("");
 
 function submit() {
   if (!isSubmitReady) {
@@ -24,55 +22,84 @@ function submit() {
     return;
   }
 
-  const { data, error } = useCustomFetch('/auth/jwt/create/', {
-    method: 'POST',
+  const { data, error } = useCustomFetch("/auth/jwt/create/", {
+    method: "POST",
     body: {
       username: username.value,
       password: password.value,
     },
     headers: {
-      'Host': "foodfastpass.ie",
-      'Origin': "foodfastpass.ie",
+      Host: "foodfastpass.ie",
+      Origin: "foodfastpass.ie",
     },
     onResponseError: ({ request, response, options }) => {
       console.log(response);
       errorMessage.value = response._data.detail;
-    }
+      isFailed.value = true;
+    },
+    onResponse: ({ request, response, options }) => {
+      if (!response.ok) return;
+      const token = response._data.access;
+      localStorage.setItem("foodfastpass_user_token", token);
+      navigateTo("/");
+    },
   });
-  if (error.value) {
-    isFailed.value = true;
-  }
-  else {
-    isFailed.value = false;
-    // @ts-ignore
-    const token: string = data.value?.access;
-    localStorage.setItem('foodfastpass_user_token', token);
-    navigateTo('/');
-  }
+  // if (error.value) {
+  //   isFailed.value = true;
+  // } else {
+  //   isFailed.value = false;
+  //   // @ts-ignore
+  //   const token: string = data.value?.access;
+  //   console.log(token);
+  //   localStorage.setItem("foodfastpass_user_token", token);
+  //   navigateTo("/");
+  // }
 }
 
 const passwordHidden = ref(true);
-
 </script>
 
 <template>
   <section class="registration">
-
     <div class="registration__section">
       <p class="registration__title">Username</p>
-      <input v-model="username" type="text" placeholder="Enter your username" class="registration__field">
+      <input
+        v-model="username"
+        type="text"
+        placeholder="Enter your username"
+        class="registration__field"
+      />
     </div>
 
     <div class="registration__section">
       <p class="registration__title">Password</p>
-      <div style="width:100%; flex-direction: row; align-items: center">
-        <input style="width:100%" v-model="password" :type="passwordHidden ? 'password' : 'text'" placeholder="••••••••" class="registration__field">
-        <EyeIcon height="4rem" :is-closed="!passwordHidden" style="margin-left: -4.5rem; vertical-align: middle; margin-top: -0.5%; align-self:stretch" @click="passwordHidden = !passwordHidden"/>
+      <div style="width: 100%; flex-direction: row; align-items: center">
+        <input
+          style="width: 100%"
+          v-model="password"
+          :type="passwordHidden ? 'password' : 'text'"
+          placeholder="••••••••"
+          class="registration__field"
+        />
+        <EyeIcon
+          height="4rem"
+          :is-closed="!passwordHidden"
+          style="
+            margin-left: -4.5rem;
+            vertical-align: middle;
+            margin-top: -0.5%;
+            align-self: stretch;
+          "
+          @click="passwordHidden = !passwordHidden"
+        />
       </div>
     </div>
 
     <button
-      :class="['registration__sign-up', {'registration__sign-up_disabled': !isSubmitReady}]"
+      :class="[
+        'registration__sign-up',
+        { 'registration__sign-up_disabled': !isSubmitReady },
+      ]"
       @click="submit"
     >
       Sign in
@@ -93,7 +120,6 @@ const passwordHidden = ref(true);
 </template>
 
 <style scoped lang="scss">
-
 .registration {
   padding: 0 2.4rem;
 
@@ -125,8 +151,7 @@ const passwordHidden = ref(true);
     border: var(--light-color) 1px solid;
     outline-color: transparent;
 
-
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &:focus {
       outline-color: var(--dark-color);
@@ -159,5 +184,4 @@ const passwordHidden = ref(true);
     text-wrap: balance;
   }
 }
-
 </style>

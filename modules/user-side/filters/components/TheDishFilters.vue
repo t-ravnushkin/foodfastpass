@@ -24,7 +24,7 @@ const {
 const verboseDiets = new Map([
   [ 'Vegan', 'Vegan' ],
   [ 'Vegetarian', 'Vegetarian' ],
-  [ 'Pescatarian', 'Pescatarian' ],
+  [ 'Pescetarian', 'Pescetarian' ],
 ]);
 
 const verboseAllergens = new Map([
@@ -33,8 +33,8 @@ const verboseAllergens = new Map([
   [ 'Eggs', 'Eggs free' ],
   [ 'Soya', 'Soy free' ],
   [ 'Nuts', 'Nuts free' ],
-  [ 'Diary', 'Dairy free' ],
-  [ 'Peanut', 'Peanuts free' ],
+  [ 'Dairy', 'Dairy free' ],
+  [ 'Peanuts', 'Peanuts free' ],
   [ 'Celery', 'Celery free' ],
   [ 'Mustard', 'Mustard free' ],
   [ 'Lupin', 'Lupin free' ],
