@@ -43,8 +43,8 @@ function restaurantById(restaurantId: number): Restaurant | undefined {
       {{
         order.products?.length > 0 ?
           currencyMap[order.products[0].currency]
-          + order.products
-            .reduce((accumulator, currentValue) => accumulator + Number(currentValue.price), 0)
+          + (order.products
+            .reduce((accumulator, currentValue) => accumulator + Number(currentValue.price * order.quantity[currentValue.id]), 0) * (1 - order.discount / 100))
             .toFixed(2) :
           '0.00'
       }} • {{ order?.timestamp ? 'Collected ' + order.timestamp : 'pending' }}

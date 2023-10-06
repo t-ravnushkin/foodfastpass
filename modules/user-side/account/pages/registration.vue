@@ -50,9 +50,10 @@ const isPasswordValid = computed(() => {
   if (password.value === "") {
     return true;
   }
-  // Your password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number'
-  // check if password is valid
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password.value);
+  // check if password is at least 8 characters long, contains an uppercase letter, a lowercase letter and a number
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*-№]{8,}$/.test(
+    password.value
+  );
 });
 
 const isPasswordRepeated = computed(() => {
@@ -215,7 +216,7 @@ async function submit() {
               margin-left: -4.5rem;
               vertical-align: middle;
               margin-top: -0.5%;
-              align-self: stretch;
+              align-self: center;
             "
             @click="passwordHidden = !passwordHidden"
           />
@@ -225,8 +226,8 @@ async function submit() {
           {{ passwordError }}
         </p>
         <p v-if="!isPasswordValid" class="registration__error">
-          Your password must be at least 8 characters including a lowercase
-          letter, an uppercase letter, and a number
+          Your password must be at least 8 characters long, including a
+          lowercase letter, an uppercase letter, and a number
         </p>
       </div>
 
@@ -240,7 +241,7 @@ async function submit() {
           :class="{ registration__field_invalid: !isPasswordRepeated }"
         />
         <p v-if="!isPasswordRepeated" class="registration__error">
-          Passwords do not match
+          Passwords don't match
         </p>
       </div>
 
@@ -258,12 +259,17 @@ async function submit() {
       </button>
 
       <p v-if="isEmailInCheck" class="registration__bottom-text">
-        The verification mail has been sent. Please check you mailbox.
+        A verification link has been sent to your email account. Please check
+        your inbox
       </p>
 
       <p v-if="isFailed" class="registration__error">
         {{ errorMessage }}
       </p>
+
+      <NuxtLink href="/account" class="registration__link"
+        >Have an account? Sign in</NuxtLink
+      >
     </section>
   </article>
 </template>
@@ -310,6 +316,12 @@ async function submit() {
 
   &__field_invalid {
     border-color: red;
+  }
+
+  &__link {
+    color: var(--primary-color);
+    font: 400 normal 1.4rem/1.5 Inter, sans-serif;
+    text-decoration: none;
   }
 
   &__sign-up {

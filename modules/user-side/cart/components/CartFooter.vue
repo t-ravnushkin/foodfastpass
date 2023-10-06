@@ -3,6 +3,7 @@ const props = defineProps<{
   totalPrice: string;
   readyForCheckout: boolean;
   discountedPrice: string;
+  processing: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -22,7 +23,7 @@ const onConfirmation = ref(false);
     </p>
 
     <button
-      v-if="!onConfirmation || !readyForCheckout"
+      v-if="(!onConfirmation || !readyForCheckout) && !processing"
       :class="[
         'footer__checkout-button',
         { 'footer__checkout-button_disabled': !readyForCheckout },
@@ -31,9 +32,18 @@ const onConfirmation = ref(false);
     >
       Checkout
     </button>
+    <button
+      v-else-if="processing"
+      class="footer__checkout-button footer__checkout-button_disabled"
+    >
+      Processing...
+    </button>
     <Confirmation
       v-else
-      @confirm="onConfirmation = false; emits('submit')"
+      @confirm="
+        onConfirmation = false;
+        emits('submit');
+      "
       @cancel="onConfirmation = false"
     />
   </footer>

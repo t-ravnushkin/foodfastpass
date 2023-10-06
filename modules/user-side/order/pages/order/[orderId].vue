@@ -42,6 +42,7 @@ function getOrderById(orderId: string): Order | undefined {
       <OrderDetails
         :cart="order?.products"
         :quantities="order?.quantity"
+        :discount="order?.discount"
       />
       <CollectionDetails :collection-status="order?.timestamp ?? 'pending'"/>
     </main>

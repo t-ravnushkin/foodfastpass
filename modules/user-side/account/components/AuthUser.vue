@@ -35,6 +35,12 @@ function submit() {
     onResponseError: ({ request, response, options }) => {
       console.log(response);
       errorMessage.value = response._data.detail;
+      if (
+        errorMessage.value ===
+        "No active account found with the given credentials"
+      ) {
+        errorMessage.value = "Incorrect email/username or password";
+      }
       isFailed.value = true;
     },
     onResponse: ({ request, response, options }) => {
@@ -62,11 +68,11 @@ const passwordHidden = ref(true);
 <template>
   <section class="registration">
     <div class="registration__section">
-      <p class="registration__title">Username</p>
+      <p class="registration__title">Email or Username</p>
       <input
         v-model="username"
         type="text"
-        placeholder="Enter your username"
+        placeholder="Enter your email or username"
         class="registration__field"
       />
     </div>

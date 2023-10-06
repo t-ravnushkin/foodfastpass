@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { request } from "http";
+import { client } from "process";
 
 const stripeForm = ref();
 
@@ -26,7 +27,7 @@ const promocodeError = ref(false);
 const promocodeSuccess = ref(false);
 
 const wrongTimeError = ref(false);
-const onConfirmation = ref(false);
+const onProcessing = ref(false);
 
 async function checkPromocode() {
   const { data, error } = await useCustomFetch("/order/PromoCodeInfo/", {
@@ -52,34 +53,45 @@ watch(coupon, () => {
 });
 
 async function handlePostOrder() {
+  onProcessing.value = true;
   wrongTimeError.value = false;
   error.value = false;
-  const { response, requestError } = await postOrder(
-    coupon.value,
-    currentTimeslot.value.start
-  );
-  if (requestError !== null || response === "-1") {
+  try {
+    const { response, requestError } = await postOrder(
+      coupon.value,
+      currentTimeslot.value.start
+    );
+    clientSecret.value = response ?? "";
+    if (requestError !== null || response === "-1") {
+      onProcessing.value;
+      wrongTimeError.value = true;
+      return;
+    }
+  } catch (e) {
+    onProcessing.value = false;
     wrongTimeError.value = true;
     return;
   }
 
-  clientSecret.value = response ?? "";
-
   try {
-    const result = await stripeForm.value.payWithCard(response ?? "");
+    const result = await stripeForm.value.payWithCard(clientSecret.value ?? "");
     if (result.hasOwnProperty("error")) {
+      onProcessing.value = false;
       error.value = true;
       return;
     }
   } catch (e) {
+    onProcessing.value = false;
     error.value = true;
     return;
   }
 
   error.value = false;
 
+  console.log("Submitting order...");
   await submitOrder();
 
+  console.log("Order submitted!");
   refreshCart();
 
   navigateTo("/");
@@ -113,7 +125,8 @@ async function handlePostOrder() {
         later.
       </p>
       <p v-if="wrongTimeError" class="cart__error">
-        Order can’t be placed because it contains products from different menus.
+        Order can’t be placed because it contains products from different menus
+        or times.
       </p>
 
       <StripeForm ref="stripeForm" />
@@ -122,9 +135,9 @@ async function handlePostOrder() {
         :total-price="priceSum()"
         :discounted-price="discount ? discountedPriceSum() : ''"
         :ready-for-checkout="isCheckoutReady()"
+        :processing="onProcessing"
         @submit="handlePostOrder"
       />
-
     </article>
   </client-only>
 </template>

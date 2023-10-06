@@ -1,17 +1,12 @@
 <script setup lang="ts">
-
-
-const email = ref('');
-const username = ref('');
+const email = ref("");
 
 const isFailed = ref(false);
 const isEmailInCheck = ref(false);
 
 const isSubmitReady = computed(() => {
-  return email.value.length > 0
-    && username.value.length > 0;
+  return email.value.length > 0;
 });
-
 
 async function submit() {
   if (!isSubmitReady) {
@@ -20,9 +15,10 @@ async function submit() {
     return;
   }
 
-  const result = await requestPasswordReset(email.value, username.value);
+  const { result, error } = await requestPasswordReset(email.value);
 
-  if (!(result ?? false)) {
+  if (error.value !== null) {
+    console.log(error);
     isFailed.value = true;
     isEmailInCheck.value = false;
     return;
@@ -31,58 +27,51 @@ async function submit() {
   isFailed.value = false;
   isEmailInCheck.value = true;
 
-  navigateTo('/account');
+  
 }
-
-
 </script>
 
 <template>
   <article class="account">
-
-    <HeaderForAccount/>
+    <HeaderForAccount />
 
     <client-only>
       <main class="account__main">
-
-        <div class="registration__section">
-          <p class="registration__title">Username</p>
-          <input v-model="username" type="text" placeholder="Enter your username" class="registration__field">
-        </div>
-
         <div class="registration__section">
           <p class="registration__title">Email</p>
-          <input v-model="email" type="email" placeholder="Enter your email" class="registration__field">
+          <input
+            v-model="email"
+            type="email"
+            placeholder="Enter your email"
+            class="registration__field"
+          />
         </div>
 
         <button
-          :class="['registration__sign-up', {'registration__sign-up_disabled': !isSubmitReady}]"
+          :class="[
+            'registration__sign-up',
+            { 'registration__sign-up_disabled': !isSubmitReady },
+          ]"
           @click="submit"
         >
-          Sign in
+          Reset password
         </button>
 
-        <p
-          v-if="isEmailInCheck"
-          class="registration__error"
-        >
-          The verification mail has been sent. Please check you mailbox.
+        <p v-if="isEmailInCheck" class="registration__error">
+          Password reset link has been sent to your email account. Please check
+          your inbox
         </p>
 
         <p v-if="isFailed" class="registration__error">
           Something went wrong. Please check your info or try again later.
         </p>
-
       </main>
     </client-only>
-
   </article>
 </template>
 
 <style scoped lang="scss">
-
 .account {
-
   &__main {
     margin: 10.8rem 2.4rem 0 2.4rem;
   }
@@ -119,7 +108,7 @@ async function submit() {
     border: var(--light-color) 1px solid;
     outline-color: transparent;
 
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &:focus {
       outline-color: var(--dark-color);
@@ -148,5 +137,4 @@ async function submit() {
     text-wrap: balance;
   }
 }
-
 </style>

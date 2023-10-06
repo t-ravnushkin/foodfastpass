@@ -4,9 +4,12 @@ const emits = defineEmits(["cancel", "confirm"]);
 
 <template>
   <div class="confirmation">
-    <p class="confirmation__text">Are you sure?</p>
-    <button @click="emits('cancel')" class="confirmation__button">Cancel</button>
-    <button @click="emits('confirm')" class="confirmation__button">Confirm</button>
+    <button @click="emits('confirm')" class="confirmation__button">
+      Confirm
+    </button>
+    <button @click="emits('cancel')" class="confirmation__button">
+      Cancel
+    </button>
   </div>
 </template>
 
@@ -19,7 +22,7 @@ const emits = defineEmits(["cancel", "confirm"]);
   &__text {
     color: var(--dark-color);
     font: 500 normal 2rem/1.5 Inter, sans-serif;
-    width:100%;
+    width: 100%;
     align-self: center;
   }
   &__button {

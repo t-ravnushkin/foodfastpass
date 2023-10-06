@@ -16,7 +16,7 @@ const emits = defineEmits<{
   <div class="coupon">
     <label for="coupon" class="coupon__label"> Promocode </label>
 
-    <div style="width:70%;display:flex;justify-content: end;">
+    <div style="width: 100%; display: flex; justify-content: end">
       <input
         type="text"
         name="coupon"
@@ -26,11 +26,22 @@ const emits = defineEmits<{
         :size="Math.max(coupon.length, 1)"
         class="coupon__input"
         :style="{
-          'border-color': error ? 'var(--red-color)' : (success ? 'var(--green-color)' : ''),
+          'border-color': error
+            ? 'var(--red-color)'
+            : success
+            ? 'var(--green-color)'
+            : '',
         }"
         @input="event => emits('update:coupon', (event.target as HTMLInputElement)?.value)"
       />
-      <button class="coupon__promocode_button" @click="emits('checkPromocode')" :class="{ 'coupon__promocode_button_disabled': disabled }" :disabled="disabled">Check promocode</button>
+      <button
+        class="coupon__promocode_button"
+        @click="emits('checkPromocode')"
+        :class="{ coupon__promocode_button_disabled: disabled }"
+        :disabled="disabled"
+      >
+        Apply
+      </button>
     </div>
   </div>
 </template>
@@ -48,7 +59,7 @@ const emits = defineEmits<{
   }
 
   &__input {
-    min-width: 20%;
+    min-width: 32%;
     max-width: 100%;
     height: 40px;
 
@@ -68,7 +79,7 @@ const emits = defineEmits<{
   &__promocode_button {
     grid-area: button;
 
-    width: 15%;
+    width: 25%;
     height: 40px;
     margin-left: 10px;
     // padding: 1.2rem 2rem;
@@ -84,7 +95,7 @@ const emits = defineEmits<{
     border-radius: 0.8rem;
     background: var(--dark-color);
 
-    font: 500 normal 1.8rem/1.5 Inter, sans-serif;
+    font: 500 normal 1.6rem/1.5 Inter, sans-serif;
 
     transition: all ease 0.2s;
 

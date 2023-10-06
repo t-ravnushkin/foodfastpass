@@ -1,17 +1,17 @@
-export default async function (email: string, username: string) {
+export default async function (email: string) {
 
 
-  const { data } = useCustomFetch(
+  const { data, error } = useCustomFetch(
     '/auth/users/reset_password/',
     {
       method: 'POST',
       body: {
         email,
-        username,
+        username: email,
       },
     },
   );
 
-  return data.value;
+  return { result: data.value, error };
 
 }
