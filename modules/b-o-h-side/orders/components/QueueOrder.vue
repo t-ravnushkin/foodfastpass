@@ -98,6 +98,7 @@ function isSoon(timeSlot: string) {
   &__quantity {
     color: var(--dark-gray-color);
     font: 400 normal 1.6rem/1.5 Inter, sans-serif;
+    margin-left: 30px;
   }
 
   &__dish-name {

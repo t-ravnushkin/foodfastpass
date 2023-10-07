@@ -1,11 +1,20 @@
 <script setup lang="ts">
 const email = ref("");
+const isEmailValid = computed(() => {
+  // check if email is valid
+  if (email.value === "") {
+    return true;
+  }
+  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email.value
+  );
+});
 
 const isFailed = ref(false);
 const isEmailInCheck = ref(false);
 
 const isSubmitReady = computed(() => {
-  return email.value.length > 0;
+  return email.value.length > 0 && isEmailValid.value;
 });
 
 async function submit() {
@@ -17,17 +26,14 @@ async function submit() {
 
   const { result, error } = await requestPasswordReset(email.value);
 
-  if (error.value) {
-    console.log(error.value);
+  if (error.value !== null && error.value !== undefined) {
+    console.log(error);
     isFailed.value = true;
     isEmailInCheck.value = false;
     return;
   }
-
   isFailed.value = false;
   isEmailInCheck.value = true;
-
-  
 }
 </script>
 
@@ -44,7 +50,13 @@ async function submit() {
             type="email"
             placeholder="Enter your email"
             class="registration__field"
+            :class="{
+              registration__field_invalid: !isEmailValid,
+            }"
           />
+          <p v-if="!isEmailValid" class="registration__error">
+            Please enter a valid email
+          </p>
         </div>
 
         <button
@@ -113,6 +125,10 @@ async function submit() {
     &:focus {
       outline-color: var(--dark-color);
     }
+  }
+
+  &__field_invalid {
+    border-color: red;
   }
 
   &__sign-up {

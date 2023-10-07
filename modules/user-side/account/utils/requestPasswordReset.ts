@@ -11,7 +11,6 @@ export default async function (email: string) {
       },
     },
   );
-
   return { result: data.value, error };
 
 }

@@ -267,7 +267,10 @@ async function submit() {
         {{ errorMessage }}
       </p>
 
-      <NuxtLink href="/account" class="registration__link"
+      <NuxtLink
+        v-if="!isEmailInCheck"
+        href="/account"
+        class="registration__link"
         >Have an account? Sign in</NuxtLink
       >
     </section>

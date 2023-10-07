@@ -87,7 +87,7 @@ async function submit() {
         </button>
 
         <p v-if="isSucceed" class="registration__error">
-          Password successfully changed. Redirecting...
+          Password has been successfully changed. Redirecting...
         </p>
 
         <p v-if="isFailed" class="registration__error">
