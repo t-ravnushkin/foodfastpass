@@ -28,7 +28,7 @@ defineProps<{
     </p>
 
     <a
-      href="https://maps.app.goo.gl/DCKvy2BaQexrdn7n7?g_st=ic"
+      :href="restaurant?.address"
       class="restaurant__directions"
     >
       Get directions
@@ -78,7 +78,7 @@ defineProps<{
 
   &__directions {
     grid-area: directions;
-    color: var(--dark-color);
+    color: var(--black-color);
     font: 500 normal 1.6rem/1.5 Inter, sans-serif;
     text-decoration: underline;
   }

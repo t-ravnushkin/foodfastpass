@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { Restaurant } from "~/modules/user-side/restaurants/types";
 
-let orders = await getOrders().then((orders) =>
-  orders?.filter((order) => {
-    return order?.active;
-  })
-);
-onMounted(async () => {
-  orders = await getOrders().then((orders) =>
+const orders = ref(
+  await getOrders().then((orders) =>
     orders?.filter((order) => {
       return order?.active;
     })
-  );
+  )
+);
+
+definePageMeta({
+  middleware: () => {
+    getOrders().then((ordersgot) => {
+      orders.value = ordersgot
+        ?.filter((order) => {
+          return order?.active;
+        });
+    });
+  },
 });
 
 const restaurants = await getRestaurants();
@@ -25,7 +31,7 @@ function restaurantById(restaurantId: number): Restaurant | undefined {
 <template>
   <section v-if="orders?.length > 0" class="orders">
     <div
-      v-for="order in orders"
+      v-for="order in orders?.sort((a, b) => new Date(a.timepayment) < new Date(b.timepayment) ? 1 : -1)"
       :key="order.id"
       class="orders__order"
       @click="$router.push(`/order/${order.id}`)"

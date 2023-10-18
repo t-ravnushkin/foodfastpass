@@ -64,6 +64,7 @@ async function submit() {
             'registration__sign-up',
             { 'registration__sign-up_disabled': !isSubmitReady },
           ]"
+          :disabled="!isSubmitReady"
           @click="submit"
         >
           Reset password

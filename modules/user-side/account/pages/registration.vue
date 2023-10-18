@@ -213,7 +213,7 @@ async function submit() {
             height="4rem"
             :is-closed="!passwordHidden"
             style="
-              margin-left: -4.5rem;
+              margin-left: -3.5rem;
               vertical-align: middle;
               margin-top: -0.5%;
               align-self: center;
@@ -279,7 +279,7 @@ async function submit() {
 
 <style scoped lang="scss">
 .registration {
-  margin-top: 12.4rem;
+  margin-top: 10.8rem;
   padding: 0 2.4rem;
 
   display: flex;

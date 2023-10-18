@@ -1,61 +1,61 @@
 <script setup lang="ts">
-
-import { vOnClickOutside } from '@vueuse/components';
-import { Collapse } from 'vue-collapsed';
-
+import { vOnClickOutside } from "@vueuse/components";
+import { Collapse } from "vue-collapsed";
 
 const { chosenMealType } = useFilters();
 
+defineProps({
+  mealTypes: Array<string>,
+});
 
 const isExpanded = ref(false);
-
 
 function toggleMealTypes() {
   isExpanded.value = !isExpanded.value;
 }
-
 </script>
 
 <template>
   <div class="meal">
-
     <p class="meal__title">Today's menu</p>
 
     <div
+      v-if="mealTypes.length > 1"
       class="meal__dropdown"
       @click="toggleMealTypes"
-      v-on-click-outside="() => { if (isExpanded) toggleMealTypes()}"
+      v-on-click-outside="
+        () => {
+          if (isExpanded) toggleMealTypes();
+        }
+      "
     >
-
       <div class="meal__current-meal">
         <span class="meal__meal-type">{{ chosenMealType }}</span>
         <DropdownArrow
           class="meal__toggle-arrow"
-          :class="{'meal__toggle-arrow_active': isExpanded}"
+          :class="{ 'meal__toggle-arrow_active': isExpanded }"
         />
       </div>
 
-      <collapse
-        :when="isExpanded"
-        :style="{transition: 'all .2s ease', paddingTop: '0.1rem'}">
+      <collapse :when="isExpanded" :style="{ transition: '0s' }">
         <div class="meal__available-meals">
           <span
-            v-for="possibleMeal in ['Breakfast', 'Lunch', 'Dinner']"
+            v-for="possibleMeal in mealTypes"
             :key="possibleMeal"
             class="meal__meal-type"
-            :class="{'meal__meal-type_active': chosenMealType === possibleMeal}"
+            :class="{
+              'meal__meal-type_active': chosenMealType === possibleMeal,
+            }"
             @click="chosenMealType = possibleMeal"
-          >{{ possibleMeal }}</span>
+            >{{ possibleMeal }}</span
+          >
         </div>
       </collapse>
-
     </div>
-
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .meal {
   height: 3.6rem;
 
@@ -69,7 +69,7 @@ function toggleMealTypes() {
   }
 
   &__dropdown {
-    width: 11.2rem;
+    width: 133.81px;
 
     margin-top: 0.2rem;
 
@@ -118,12 +118,11 @@ function toggleMealTypes() {
   }
 
   &__toggle-arrow {
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &_active {
       transform: rotateX(180deg);
     }
   }
 }
-
 </style>

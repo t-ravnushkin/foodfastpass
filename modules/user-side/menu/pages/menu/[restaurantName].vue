@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { Restaurant } from '~/modules/user-side/restaurants/types';
 
 const restaurantName = useRoute().params.restaurantName as string;
 
 const categories = useCategories(restaurantName);
 
-const { onFiltersChange } = useFilters();
+const { chosenMealType, onFiltersChange } = useFilters();
+
+const mealTypes = useMenuTypes(restaurantName);
+
+// const mealTypes = useRestaurantByName(restaurantName).allMenuTypes;
 
 const menu = ref();
 
@@ -20,19 +25,16 @@ const menuScroll = createEventHook();
 
 const { height: headerHeight } = useElementBounding(header);
 
+provide("showDishCard", showDishCard);
+provide("showFilters", showFilters);
+provide("setScrollTop", setScrollTop);
+provide("onMenuScroll", menuScroll.on);
 
-provide('showDishCard', showDishCard);
-provide('showFilters', showFilters);
-provide('setScrollTop', setScrollTop);
-provide('onMenuScroll', menuScroll.on);
-
-
-useEventListener(menu, 'scroll', useThrottleFn(onMenuScroll, 100));
+useEventListener(menu, "scroll", useThrottleFn(onMenuScroll, 100));
 
 onFiltersChange(() => {
   onMenuScroll();
 });
-
 
 function showDishCard() {
   dishCard.value.showContent();
@@ -49,15 +51,10 @@ function setScrollTop(scroll: number) {
 function onMenuScroll() {
   menuScroll.trigger(menu.value.scrollTop);
 }
-
 </script>
 
 <template>
-  <article
-    ref="menu"
-    class="menu"
-  >
-
+  <article ref="menu" class="menu">
     <TheMenuHeader
       ref="header"
       :restaurant-name="restaurantName"
@@ -69,33 +66,23 @@ function onMenuScroll() {
       v-model:are-filters-active="areFiltersActive"
     />
 
-    <MealType class="menu__meal"/>
+    <MealType class="menu__meal" :meal-types="mealTypes" />
 
-    <ListOfCategories
-      :categories="categories"
-      class="menu__categories"
-    />
+    <ListOfCategories :categories="categories" class="menu__categories" />
 
-    <TheDishFilters
-      v-model:is-active="areFiltersActive"
-    />
+    <TheDishFilters v-model:is-active="areFiltersActive" />
 
     <Teleport to="body">
-      <DishCard
-        ref="dishCard"
-        :dish="useCurrentDish()"
-      />
+      <DishCard ref="dishCard" :dish="useCurrentDish()" />
     </Teleport>
 
     <OrderPlate />
 
-    <TheMenuFooter class="menu__footer"/>
-
+    <TheMenuFooter class="menu__footer" />
   </article>
 </template>
 
 <style scoped lang="scss">
-
 .menu {
   --header-height: v-bind(headerHeight);
 
@@ -121,5 +108,4 @@ function onMenuScroll() {
     margin: 0 1.6rem 9.6rem 1.5rem;
   }
 }
-
 </style>

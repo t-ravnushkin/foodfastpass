@@ -88,10 +88,10 @@ const passwordHidden = ref(true);
           class="registration__field"
         />
         <EyeIcon
-          height="4rem"
+          height="1.5rem"
           :is-closed="!passwordHidden"
           style="
-            margin-left: -4.5rem;
+            margin-left: -3.5rem;
             vertical-align: middle;
             margin-top: -0.5%;
             align-self: stretch;
@@ -107,6 +107,7 @@ const passwordHidden = ref(true);
         { 'registration__sign-up_disabled': !isSubmitReady },
       ]"
       @click="submit"
+      :disabled="!isSubmitReady"
     >
       Sign in
     </button>
