@@ -20,6 +20,10 @@ const {
   refresh: refreshCart,
 } = useCartStore();
 
+const restaurantName = computed(() => {
+  return Object.values(cart.value)[0].dish?.restaurantName;
+});
+
 const clientSecret = ref("");
 
 const error = ref(false);
@@ -105,7 +109,10 @@ async function handlePostOrder() {
 
       <PositionsList />
 
-      <TimeSlots v-model:time-slot="currentTimeslot" />
+      <TimeSlots
+        v-model:time-slot="currentTimeslot"
+        :restaurant-name="restaurantName"
+      />
 
       <CouponForm
         v-model:coupon="coupon"

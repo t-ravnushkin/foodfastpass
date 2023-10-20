@@ -18,6 +18,7 @@ export default async function (coupon: string, timeSlot: string): Promise<any> {
 
   const restaurantName = Object.values(cart.value)[0].dish.restaurantName;
 
+  const { chosenMealType } = useFilters();
 
   const { data, error } = await useCustomFetch(
     '/order/CreateOrder/',
@@ -27,6 +28,7 @@ export default async function (coupon: string, timeSlot: string): Promise<any> {
         promocode: coupon,
         timeSlot,
         restaurantName,
+        menuType: chosenMealType,
         cart: parsedCart,
       },
       headers: {
