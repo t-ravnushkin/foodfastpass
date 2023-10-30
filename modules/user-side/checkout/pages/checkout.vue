@@ -97,77 +97,51 @@ async function handlePostOrder() {
 
   navigateTo("/");
 }
+
+const isTakeaway = ref(false);
+
+const isTimeslotExpanded = ref(false);
 </script>
 
 <template>
   <client-only>
-    <article class="cart" v-if="cart">
-      <CartHeader />
-
-      <PositionsList />
-
-      <TimeSlots
-        v-model:time-slot="currentTimeslot"
-        :restaurant-name="restaurantName"
+    <CheckoutHeader :restaurantName="restaurantName" />
+    <div class="checkout">
+      <TakeAwayForm v-model="isTakeaway" />
+      <TimeSlotForm
+        style="margin-top: -16px"
+        :restaurantName="restaurantName"
+        v-model:timeSlot="currentTimeslot"
+        v-model:isExpanded="isTimeslotExpanded"
       />
-
-      <CouponForm
+      <CheckoutCouponForm
+        v-show="!isTimeslotExpanded"
         v-model:coupon="coupon"
         :error="promocodeError"
         :success="promocodeSuccess"
         @check-promocode="checkPromocode"
         :disabled="promocodeSuccess || promocodeError"
       />
-
-      <p class="cart__instructions">
-        Every dish in the order must be ordered at the same restaurant and
-        restaurant's meal time: breakfast, lunch or dinner.
-      </p>
-
-      <p v-if="error" class="cart__error">
-        Sorry, we can't proceed now. Please check your card number or try again
-        later.
-      </p>
-      <p v-if="wrongTimeError" class="cart__error">
-        Order can’t be placed because it contains products from different menus
-        or times.
-      </p>
-
-      <StripeForm ref="stripeForm" />
-
-      <CartFooter
-        :total-price="priceSum()"
-        :discounted-price="discount ? discountedPriceSum() : ''"
-        :ready-for-checkout="isCheckoutReady()"
-        :processing="onProcessing"
-        @submit="handlePostOrder"
-      />
-    </article>
+      <CheckoutStripe v-if="!isTimeslotExpanded" ref="stripeForm" />
+    </div>
+    <CheckoutFooter
+      :total-price="priceSum()"
+      :discounted-price="discount ? discountedPriceSum() : ''"
+      :ready-for-checkout="isCheckoutReady()"
+      :processing="onProcessing"
+      @submit="handlePostOrder"
+    />
   </client-only>
 </template>
 
 <style scoped lang="scss">
-.cart {
-  padding: 10.8rem 2.4rem 20rem 2.4rem;
-
+.checkout {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 3.2rem;
-
-  &__instructions {
-    max-width: 60ch;
-    color: var(--dark-color);
-    font: 500 normal 1.6rem/1.5 Inter, sans-serif;
-    text-wrap: balance;
-  }
-
-  &__error {
-    margin: 2.4rem 0;
-    max-width: 60ch;
-    color: var(--red-color);
-    font: 500 normal 1.6rem/1.5 Inter, sans-serif;
-    text-wrap: balance;
-  }
+  align-items: center;
+  gap: 27px;
+  padding-left: 16.5px;
+  padding-right: 15.5px;
+  padding-top: 12px;
 }
 </style>

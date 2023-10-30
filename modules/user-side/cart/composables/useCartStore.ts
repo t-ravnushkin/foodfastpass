@@ -11,6 +11,10 @@ interface Cart {
 const cart = useSessionStorage<Cart>('cart', {});
 const discount = ref(0);
 
+function clear() {
+  cart.value = {};
+}
+
 function add(dish: Dish) {
   cart.value.hasOwnProperty(dish.id) ?
     cart.value[dish.id].quantity++ :
@@ -108,6 +112,13 @@ function isCheckoutReady(): boolean {
     && isAmountApproved;
 }
 
+function emptyDish(dishId: number) {
+  delete cart.value[dishId];
+}
+
+function isEmpty(): boolean {
+  return Object.keys(cart.value).length === 0;
+}
 
 export default function () {
   return {
@@ -118,6 +129,9 @@ export default function () {
     priceSum,
     isCheckoutReady,
     discountedPriceSum,
-    refresh
+    refresh,
+    clear,
+    emptyDish,
+    isEmpty
   };
 }
