@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Restaurant } from '~/modules/user-side/restaurants/types';
+import { Restaurant } from "~/modules/user-side/restaurants/types";
 
 const restaurantName = useRoute().params.restaurantName as string;
 
@@ -51,6 +51,8 @@ function setScrollTop(scroll: number) {
 function onMenuScroll() {
   menuScroll.trigger(menu.value.scrollTop);
 }
+
+const currentDish = useCurrentDish();
 </script>
 
 <template>
@@ -72,9 +74,11 @@ function onMenuScroll() {
 
     <TheDishFilters v-model:is-active="areFiltersActive" />
 
-    <Teleport to="body">
+    <NewDishCard @close="currentDish = null" :dish="currentDish" />
+
+    <!-- <Teleport to="body">
       <DishCard ref="dishCard" :dish="useCurrentDish()" />
-    </Teleport>
+    </Teleport> -->
 
     <OrderPlate />
 

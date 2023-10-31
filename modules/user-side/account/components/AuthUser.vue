@@ -93,7 +93,7 @@ const passwordHidden = ref(true);
           style="
             margin-left: -3.5rem;
             vertical-align: middle;
-            margin-top: -0.5%;
+            margin-top: -1%;
             align-self: stretch;
           "
           @click="passwordHidden = !passwordHidden"
