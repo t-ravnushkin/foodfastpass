@@ -51,7 +51,7 @@ const onConfirmation = ref(false);
 
 <style scoped lang="scss">
 .footer {
-  @media screen and (max-height: 480px) {
+  @media screen and (max-height: 700px) {
     display: none;
   }
 
