@@ -24,9 +24,9 @@ export default defineNuxtModule({
     extendPages((pages) => {
       pages.push(
         {
-          name: 'Order',
+          name: 'SomeRandomRoute',
           path: '/order/:orderId',
-          file: resolve(__dirname, './pages/order/[orderId].vue'),
+          file: resolve(__dirname, './pages/order/[orderId]'),
         },
         {
           name: 'Orders',
