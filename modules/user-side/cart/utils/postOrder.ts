@@ -1,4 +1,4 @@
-export default async function (coupon: string, timeSlot: string): Promise<any> {
+export default async function (coupon: string, timeSlot: string, takeaway?: boolean): Promise<any> {
 
   const token = useAuthToken();
 
@@ -30,6 +30,7 @@ export default async function (coupon: string, timeSlot: string): Promise<any> {
         restaurantName,
         menuType: chosenMealType,
         cart: parsedCart,
+        "takeaway": takeaway
       },
       headers: {
         Authorization: `Bearer ${token}`,

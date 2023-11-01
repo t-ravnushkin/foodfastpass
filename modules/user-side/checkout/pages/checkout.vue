@@ -60,7 +60,8 @@ async function handlePostOrder() {
   try {
     const { response, requestError } = await postOrder(
       coupon.value,
-      currentTimeslot.value.start
+      currentTimeslot.value.start,
+      isTakeaway.value
     );
     clientSecret.value = response ?? "";
     if (requestError !== null || response === "-1") {
