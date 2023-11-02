@@ -55,7 +55,9 @@ async function payWithCard(clientSecret: string): Promise<any> {
   <p class="form__text">
     All the payments are securely processed through Stripe.
   </p>
-  <p class="form__text" style="margin-top: -25px;">We do&nbsp;<u>not</u> &nbsp;store your card details.</p>
+  <p class="form__text" style="margin-top: -25px">
+    We do&nbsp;<u>not</u> &nbsp;store your card details.
+  </p>
 </template>
 
 <style scoped lang="scss">
@@ -70,7 +72,7 @@ async function payWithCard(clientSecret: string): Promise<any> {
     width: 100%;
     margin-top: -20px;
     padding-left: 8px;
-    font-family: "Roboto";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
     font-size: 12px;

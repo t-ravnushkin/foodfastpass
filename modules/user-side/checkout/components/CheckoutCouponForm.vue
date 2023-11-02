@@ -88,7 +88,7 @@ const emits = defineEmits<{
   }
 
   &__error {
-    font-family: "Roboto";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
     font-size: 12px;

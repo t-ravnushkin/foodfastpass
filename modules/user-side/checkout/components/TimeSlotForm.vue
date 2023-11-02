@@ -55,7 +55,10 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
           v-for="slot in timeslotsByHour.get(selectedHour)"
           class="selector__slots_slot"
           :class="{ selector__slots_slot_selected: slot === timeSlot.end }"
-          @click="emits('update:timeSlot', { start: slot, end: slot });toggleTimeSlots()"
+          @click="
+            emits('update:timeSlot', { start: slot, end: slot });
+            toggleTimeSlots();
+          "
         >
           {{ slot }}
         </button>
@@ -165,7 +168,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
 
   &__edit_text {
     align-self: center;
-    font-family: "Roboto";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
