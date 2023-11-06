@@ -54,6 +54,10 @@ watch(coupon, () => {
 });
 
 async function handlePostOrder() {
+  if (!verifyCart()) {
+    hasOutOfStock.value = true;
+    return;
+  }
   onProcessing.value = true;
   wrongTimeError.value = false;
   error.value = false;
@@ -102,10 +106,13 @@ async function handlePostOrder() {
 const isTakeaway = ref(false);
 
 const isTimeslotExpanded = ref(false);
+
+const hasOutOfStock = ref(false);
 </script>
 
 <template>
   <client-only>
+    <OutOfStockError v-model:open="hasOutOfStock" in-checkout />
     <CheckoutHeader :restaurantName="restaurantName" />
     <div class="checkout">
       <TakeAwayForm v-model="isTakeaway" />

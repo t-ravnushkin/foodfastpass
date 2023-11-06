@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { Dish } from "~/modules/user-side/menu/types";
 const props = defineProps<{
-  dishId: number;
+  dish: Dish;
 }>();
+
+const emits = defineEmits(["customize"]);
 
 const { cart, discount, add, remove, emptyDish } = useCartStore();
 
-const dish = cart.value[props.dishId].dish;
+const outOfStockString = computed(() => {
+  const outOfStockIngredients = getDishErrors(props.dish);
+  if (outOfStockIngredients.length === 0) return "";
+  return `Out of Stock: ${outOfStockIngredients.join(", ")}`;
+});
 </script>
 
 <template>
@@ -15,37 +22,27 @@ const dish = cart.value[props.dishId].dish;
     <p class="dish__title">{{ dish.name }}</p>
 
     <p v-if="!discount" class="dish__price">
-      {{ dish.currency
-      }}{{ (dish.priceValue * cart[dishId].quantity).toFixed(2) }}
+      {{ dish.currency }}{{ dish.priceValue.toFixed(2) }}
     </p>
     <p v-else class="dish__price">
-      <s
-        >{{ dish.currency
-        }}{{ (dish.priceValue * cart[dishId].quantity).toFixed(2) }}</s
+      <s>{{ dish.currency }}{{ dish.priceValue.toFixed(2) }}</s
       >{{ dish.currency
-      }}{{
-        (
-          dish.priceValue *
-          (1 - discount / 100) *
-          cart[dishId].quantity
-        ).toFixed(2)
-      }}
+      }}{{ (dish.priceValue * (1 - discount / 100)).toFixed(2) }}
+    </p>
+
+    <p class="dish__errors" v-if="outOfStockString.length > 0">
+      {{ outOfStockString }}
     </p>
 
     <div class="dish__rem_btn">
-      <OrderCrossIcon @click="emptyDish(dishId)" v-if="dish.inStock" />
-      <RedOrderCrossIcon @click="emptyDish(dishId)" v-else />
+      <OrderCrossIcon @click="remove(dish)" v-if="dish.inStock" />
+      <RedOrderCrossIcon @click="remove(dish)" v-else />
     </div>
 
-    <div class="button-group" v-if="dish.inStock">
-      <button class="button-group__button" @click="remove(dish)">
-        <MinusIcon />
-      </button>
-      <button class="button-group__button">{{ cart[dishId].quantity }}</button>
-      <button class="button-group__button" @click="add(dish)">
-        <PlusIcon />
-      </button>
+    <div class="button-group" v-if="dish.inStock" @click="emits('customize')">
+      <button class="button-group__button">Edit</button>
     </div>
+    <p v-else class="dish__out">Out of stock</p>
   </li>
 </template>
 
@@ -55,13 +52,35 @@ const dish = cart.value[props.dishId].dish;
   display: grid;
   grid-template-areas:
     "image title price"
-    "image edit rem_btn"
+    "image errors rem_btn"
     "image buttons buttons";
-  grid-template-columns: 90px auto 40px;
+  grid-template-columns: 90px calc(100% - 130px - 2.4rem) 40px;
   grid-template-rows: auto auto 27px;
   gap: 0 1.2rem;
 
   margin-bottom: 24px;
+
+  &__errors {
+    width: 100%;
+    grid-area: errors;
+    color: #f00;
+    font-family: Inter;
+    font-size: 14px;
+    overflow-wrap: break-word;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%; /* 21px */
+  }
+
+  &__out {
+    grid-area: buttons;
+    color: #f00;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%; /* 21px */
+  }
 
   &__image {
     width: 8.16rem;
@@ -105,7 +124,7 @@ const dish = cart.value[props.dishId].dish;
   height: 27px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding-left: 6px;
   padding-right: 6px;
 

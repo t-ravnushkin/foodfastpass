@@ -1,14 +1,19 @@
 <script setup lang="ts">
-const { cart: dishes } = useCartStore();
+const { cart: dishes, customItems } = useCartStore();
+
+const customDish = useCustomDish();
 </script>
 
 <template>
+  <CustomizationCard v-model:dish="customDish" in-cart />
   <div id="dishList" class="dishes">
     <h1 class="dishes__title">Order</h1>
-    <OrderPosition
-      v-for="(position, id) in dishes"
-      :key="id"
-      :dish-id="Number(id)"
+    <OrderPosition v-for="(position, id) in dishes" :key="id" :dish-id="id" />
+    <CustomizedPosition
+      v-for="(item, position) in customItems"
+      :key="position"
+      :dish="item"
+      @customize="customDish = item"
     />
   </div>
 </template>

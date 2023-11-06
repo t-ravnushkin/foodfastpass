@@ -1,7 +1,7 @@
-import type { Categories, Dish, FoodProperties, RawDish } from '~/modules/user-side/menu/types';
+import { Categories, Dish, FoodProperties, RawDish, CustomGroup, CustomItem } from '~/modules/user-side/menu/types';
 
 
-const currencyMap: {[s: string]: string} = {
+const currencyMap: { [s: string]: string } = {
   'eur': '€',
 };
 
@@ -49,6 +49,25 @@ export default function (rawDishes: RawDish[], restaurantName: string): Categori
       'Carbohydrates': { value: dish.carbohydrates, unit: 'g', main: false },
     };
 
+    const custom: CustomGroup[] = [];
+    if (dish.customizableList.length > 0) {
+      console.log(dish.customizableList);
+      for (const group of dish.customizableList[0]) {
+        const items: CustomItem[] = [];
+        for (const item of group.text) {
+          items.push({
+            name: item[0],
+            available: item[1],
+            removed: !item[1],
+          })
+        }
+        custom.push({
+          name: group.name,
+          items: items
+        })
+      }
+      console.log(custom)
+    }
 
     const parsedDish: Dish = {
       id: dish.id,
@@ -56,8 +75,10 @@ export default function (rawDishes: RawDish[], restaurantName: string): Categori
       price,
       priceValue: Number(dish.price),
       currency: String(currencyMap[dish.currency]) ?? dish.currency,
+      custom: custom.length > 0 ? custom : undefined,
       images,
       filters,
+      inStock: dish.inStock,
       rating: Number(dish.ratings),
       description: description,
       foodProperties: foodProperties,

@@ -4,7 +4,7 @@ import { Restaurant } from "~/modules/user-side/restaurants/types";
 const orders = ref(
   await getOrders().then((orders) =>
     orders?.filter((order) => {
-      return order?.active;
+      return order?.state !== "Confirm";
     })
   )
 );
@@ -14,7 +14,7 @@ definePageMeta({
     getOrders().then((ordersgot) => {
       orders.value = ordersgot
         ?.filter((order) => {
-          return order?.active;
+          return order?.state !== "Confirm";
         });
     });
   },

@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     '~/modules/user-side/cart-pre',
     '~/modules/user-side/checkout',
     '~/modules/user-side/new-dish-card',
+    '~/modules/user-side/customization-card',
 
     '~/modules/b-o-h-side/auth',
     '~/modules/b-o-h-side/orders',

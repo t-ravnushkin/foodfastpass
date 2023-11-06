@@ -1,16 +1,31 @@
 <script setup lang="ts">
-const { priceSum, isEmpty } = useCartStore();
+const { priceSum, isEmpty, isCheckoutReady } = useCartStore();
+
+const hasErrors = ref(false);
+
+async function handleCheckout() {
+  const ready = await verifyCart();
+  if (!ready) {
+    hasErrors.value = true;
+    return;
+  }
+  navigateTo("/checkout");
+}
 </script>
 
 <template>
+  <OutOfStockError v-model:open="hasErrors" />
   <footer class="footer" v-if="!isEmpty()">
     <p class="footer__total">Total</p>
 
     <p class="footer__price">{{ priceSum() }}</p>
 
     <button
-      :class="['footer__checkout-button']"
-      @click="navigateTo('/checkout')"
+      :class="[
+        'footer__checkout-button',
+        { 'footer__checkout-button_disabled': !isCheckoutReady() },
+      ]"
+      @click="handleCheckout"
     >
       Checkout
     </button>
@@ -44,7 +59,7 @@ const { priceSum, isEmpty } = useCartStore();
 
   background: var(--white-color);
 
-  z-index: 5000;
+  z-index: 1000;
 
   &__total {
     grid-area: total;

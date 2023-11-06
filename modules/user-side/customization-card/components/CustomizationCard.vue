@@ -7,23 +7,20 @@ import type { Dish } from "~/modules/user-side/menu/types";
 
 const props = defineProps<{
   dish: Ref<Dish | null>;
+  inCart?: boolean;
 }>();
-
-function customize() {
-  emits("customize", props.dish);
-  close();
-}
-
-const emits = defineEmits(["close", "customize"]);
+const emits = defineEmits(["update:dish"]);
 
 const { cart, add, remove } = useCartStore();
 
 function close() {
-  emits("close");
+  emits("update:dish", null);
 }
 
 const swipeTarget = ref<HTMLElement | null>(null);
-const containerHeight = computed(() => swipeTarget.value?.offsetHeight ?? 0);
+const containerHeight = computed(
+  () => document.getElementsByClassName("card")[0].clientHeight
+);
 const bottom = ref("0");
 const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
   onSwipe(e: TouchEvent) {
@@ -53,16 +50,11 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
   <Teleport to="body">
     <div class="backdrop" @click="close" v-if="dish"></div>
     <Transition name="slide">
-      <div
-        ref="swipeTarget"
-        :style="{ bottom }"
-        class="card"
-        @click="close"
-        v-if="dish"
-      >
+      <div :style="{ bottom }" class="card" @click="close" v-if="dish">
         <div class="card__up_rect"></div>
         <div class="card__main" @click.stop>
           <ImgDefault
+            ref="swipeTarget"
             :src="dish.images[0]"
             :alt="dish.name"
             class="card__main_image"
@@ -70,75 +62,53 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
           <div class="card__close" @click.stop="close">
             <OrderCrossIcon />
           </div>
-          <div class="card__main_content">
-            <div class="card__main_content_name_price">
-              <p class="card__main_content_name">{{ dish.name }}</p>
-              <p class="card__main_content_price">
-                {{ dish.price }}
-              </p>
-            </div>
-            <p class="card__main_content_contains">Contains:</p>
-            <div class="card__main_content_allergen_list">
+          <div class="card__name_container">
+            <p class="card__name_container_text">{{ dish.name }}</p>
+            <p class="card__name_container_price">{{ dish.price }}</p>
+          </div>
+          <div class="ingredients">
+            <div class="ingredients__group" v-for="group in dish.custom">
               <div
-                v-for="filter in dish.filters"
-                :key="filter"
-                class="card__main_content_allergen"
+                class="ingredients__group_item"
+                v-for="item in group.items"
+                @click.stop="if (item.available || (!item.available && !item.removed)) item.removed = !item.removed;"
               >
-                <IconByFilter
-                  :filter="filter"
-                  class="card__main_content_allergen_icon"
-                />
-                <p class="card__main_content_allergen_text">
-                  {{ filter === "Gluten/Wheat" ? "Gluten" : filter }}
+                <p
+                  :class="{ ingredients__group_item_disabled: !item.available && item.removed, ingredients__group_item_error: !item.available && !item.removed }"
+                >
+                  {{ item.name }}
                 </p>
+                <IngredientCheckbox
+                  :disabled="!item.available && item.removed"
+                  :checked="!item.removed"
+                />
               </div>
             </div>
-            <div class="card__buttons" v-if="dish.inStock && !dish.custom">
+          </div>
+          <div class="card__footer">
+            <div class="card__buttons" v-if="dish.inStock && !inCart">
               <div
                 class="card__buttons_add_container"
                 v-if="(cart[dish.id]?.quantity ?? 0) === 0"
-                @click.stop="add(dish)"
+                @click.stop="
+                  add(dish);
+                  close();
+                "
               >
                 <div class="card__buttons_add">
-                  <PlusIcon
-                    size="15"
-                    color="white"
-                  />
+                  <PlusIcon size="15" color="white" />
                   <p>Add</p>
                 </div>
               </div>
-              <div
-                class="card__buttons_minus"
-                v-if="(cart[dish.id]?.quantity ?? 0) > 0"
-                @click.stop="remove(dish)"
-              >
-                <MinusIcon size="15" color="white" />
-              </div>
-              <p v-if="(cart[dish.id]?.quantity ?? 0) > 0">
-                {{ cart[dish.id]?.quantity }}
-              </p>
-              <div
-                class="card__buttons_plus"
-                v-if="(cart[dish.id]?.quantity ?? 0) > 0"
-                @click.stop="add(dish)"
-              >
-                <PlusIcon
-                  v-if="(cart[dish.id]?.quantity ?? 0) > 0"
-                  size="15"
-                  color="white"
-                  @click.stop="add(dish)"
-                />
-              </div>
             </div>
-            <div class="card__buttons" v-else-if="dish.inStock && dish.custom">
-              <div
-                class="card__buttons_add_container"
-                @click.stop="customize()"
-              >
-                <p>Customize</p>
-              </div>
+            <div
+              class="card__buttons"
+              @click.stop="close()"
+              v-else-if="dish.inStock && inCart"
+            >
+              <p>Save</p>
             </div>
-            <div class="card__buttons card__buttons_out" v-else>
+            <div class="card__butons card__buttons_out" v-else>
               <p>Out of stock</p>
             </div>
           </div>
@@ -149,6 +119,50 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
 </template>
 
 <style scoped lang="scss">
+.ingredients {
+  width: 100%;
+  height: calc(100% - 236.202px - 131px - 49px);
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  padding: 0 17px;
+
+  &__group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 0;
+    gap: 8.5px;
+    border-bottom: 1px solid #d7d7d7;
+    color: #000;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 27px */
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &_item {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      &_error {
+        color: red;
+      }
+
+      &_disabled {
+        color: #a5a5a5;
+      }
+    }
+  }
+}
+
 .slide-enter-active {
   transition: all 0.1s ease-out;
 }
@@ -177,27 +191,12 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
   left: 0;
   bottom: 0;
   z-index: 2100;
-  height: 519px;
+  height: calc(100% - 65px);
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-
-  &__close {
-    position: absolute;
-    right: 13px;
-    top: 21px;
-    opacity: 85%;
-    border-radius: 100px;
-    background-color: #fff;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-  }
 
   &__buttons {
     height: 52px;
@@ -206,7 +205,7 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
     background-color: var(--dark-color);
     padding: 0 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     color: #fff;
     font-family: Inter;
@@ -243,28 +242,109 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
 
     &_out {
       background: #f1f1f1;
-      display: flex;
-      justify-content: center;
       color: black;
     }
+  }
+
+  &__button {
+    display: flex;
+    width: 379px;
+    height: 52px;
+    padding: 0px 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    background: var(--dark-color, #3636ab);
+    gap: 7px;
+    flex-shrink: 0;
+
+    &_text {
+      color: #fff;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 150%; /* 30px */
+    }
+  }
+
+  &__name_container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 17px;
+    padding-right: 10px;
+    height: 49px;
+
+    box-shadow: 0px 4px 8px -2px rgba(0, 0, 0, 0.05),
+      0px 2px 4px -2px rgba(54, 54, 171, 0.04);
+
+    &_text {
+      color: #000;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 150%; /* 30px */
+    }
+
+    &_price {
+      color: var(--dark-color, #3636ab);
+      font-family: Inter;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 100%; /* 18px */
+    }
+  }
+
+  &__footer {
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    padding: 10px 7px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 131px;
+    box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  &__close {
+    position: absolute;
+    right: 13px;
+    top: 13px;
+    opacity: 85%;
+    border-radius: 100px;
+    background-color: #fff;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
   }
 
   &__up_rect {
     width: 45px;
     height: 5px;
+    margin-top: 3px;
+    position: fixed;
     border-radius: 100px;
     background: #9f9f9f;
   }
 
   &__main {
-    height: 508px;
+    height: 100%;
     background-color: white;
     width: 100%;
     border-radius: 22px 22px 0px 0px;
 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     &_image {
       width: 100%;

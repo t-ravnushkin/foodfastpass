@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { priceSum } = useCartStore();
+const { priceSum, customItems } = useCartStore();
 
 const isActive = computed(() => {
   const matches = priceSum().match(/\d+\.?\d*/g) ?? ["0"];

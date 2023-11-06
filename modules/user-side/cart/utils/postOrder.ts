@@ -30,7 +30,7 @@ export default async function (coupon: string, timeSlot: string, takeaway?: bool
         restaurantName,
         menuType: chosenMealType,
         cart: parsedCart,
-        "takeaway": takeaway
+        "Takeaway": takeaway
       },
       headers: {
         Authorization: `Bearer ${token}`,

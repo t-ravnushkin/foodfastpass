@@ -1,13 +1,10 @@
 <script setup lang="ts">
-
-import type { Dish } from '~/modules/user-side/menu/types';
-
+import type { Dish } from "~/modules/user-side/menu/types";
 
 const props = defineProps<{
   categoryName: string;
   dishes: Dish[];
 }>();
-
 
 const table = ref();
 
@@ -15,40 +12,34 @@ const { chosenAllergens, areFiltersApproved } = useFilters();
 
 const { scrollSetCategory } = useCategoryScrollObserver();
 
-const showDishCard = inject('showDishCard') as Function;
+const showDishCard = inject("showDishCard") as Function;
 
-const onMenuScroll = inject('onMenuScroll') as Function;
-
+const onMenuScroll = inject("onMenuScroll") as Function;
 
 onMenuScroll((scroll: number) => {
   const top = table.value.offsetTop - scroll;
   const bottom = top + table.value.clientHeight;
 
-  if (top < 150 && 150 < bottom)
-    scrollSetCategory(props.categoryName);
+  if (top < 150 && 150 < bottom) scrollSetCategory(props.categoryName);
 });
-
 
 function handleDishSelect(dish: Dish) {
   useCurrentDish(dish);
   showDishCard();
 }
-
 </script>
 
 <template>
   <section
     ref="table"
-    v-show="dishes.some(dish => areFiltersApproved(dish))"
+    v-show="dishes.some((dish) => areFiltersApproved(dish))"
     class="table"
   >
-
     <header class="table__table-name">
       {{ categoryName }}
     </header>
 
     <main class="table__dishes">
-
       <DishPreview
         v-for="dish in dishes"
         :key="dish.id"
@@ -56,14 +47,11 @@ function handleDishSelect(dish: Dish) {
         :is-active="areFiltersApproved(dish)"
         @click="handleDishSelect(dish)"
       />
-
     </main>
-
   </section>
 </template>
 
 <style scoped lang="scss">
-
 .table {
   width: 100%;
 
@@ -74,7 +62,7 @@ function handleDishSelect(dish: Dish) {
   align-items: flex-start;
   align-self: stretch;
 
-  filter: drop-shadow(1px -1px 6px rgba(54, 54, 171, 0.10))
+  filter: drop-shadow(1px -1px 6px rgba(54, 54, 171, 0.1))
     drop-shadow(0px 4px 4px rgba(54, 54, 171, 0.25));
 
   &__table-name {
@@ -107,5 +95,4 @@ function handleDishSelect(dish: Dish) {
     //border-left: 1.5px solid var(--light-color);
   }
 }
-
 </style>

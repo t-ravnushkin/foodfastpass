@@ -1,19 +1,14 @@
 <script setup lang="ts">
-
-import { Dish } from '~/modules/user-side/menu/types';
-
+import { Dish } from "~/modules/user-side/menu/types";
 
 defineProps<{
   dish: Dish;
 }>();
 
-
 const { cart, add, remove } = useCartStore();
-
 </script>
 
 <template>
-
   <button
     v-if="(cart[dish.id]?.quantity ?? 0) === 0"
     class="button"
@@ -23,19 +18,14 @@ const { cart, add, remove } = useCartStore();
     <span>Add</span>
   </button>
 
-  <div
-    v-else
-    class="buttons-group"
-  >
+  <div v-else class="buttons-group">
     <div @click.stop="remove(dish)">-</div>
     <div>{{ cart[dish.id].quantity }}</div>
     <div @click.stop="add(dish)">+</div>
   </div>
-
 </template>
 
 <style scoped lang="scss">
-
 .button {
   width: 100%;
   height: 2.7rem;
@@ -51,7 +41,7 @@ const { cart, add, remove } = useCartStore();
 
   border: none;
   border-radius: 50em;
-  background: var(--light-gray-color);
+  background: #f2f2f2;
 }
 
 .buttons-group {
@@ -66,8 +56,7 @@ const { cart, add, remove } = useCartStore();
   color: var(--black-color);
   font: 400 normal 1.6rem/1 Inter, sans-serif;
 
-  background: var(--light-gray-color);
+  background: #f2f2f2;
   border-radius: 50em;
 }
-
 </style>

@@ -5,6 +5,8 @@ const restaurantName = useRoute().params.restaurantName as string;
 
 const categories = useCategories(restaurantName);
 
+const {cart, customItems} = useCartStore();
+
 const { chosenMealType, onFiltersChange } = useFilters();
 
 const mealTypes = useMenuTypes(restaurantName);
@@ -53,6 +55,7 @@ function onMenuScroll() {
 }
 
 const currentDish = useCurrentDish();
+const customDish = useCustomDish();
 </script>
 
 <template>
@@ -74,7 +77,12 @@ const currentDish = useCurrentDish();
 
     <TheDishFilters v-model:is-active="areFiltersActive" />
 
-    <NewDishCard @close="currentDish = null" :dish="currentDish" />
+    <NewDishCard
+      @close="currentDish = null"
+      @customize="(dish) => (customDish = dish)"
+      :dish="currentDish"
+    />
+    <CustomizationCard v-model:dish="customDish" />
 
     <!-- <Teleport to="body">
       <DishCard ref="dishCard" :dish="useCurrentDish()" />
