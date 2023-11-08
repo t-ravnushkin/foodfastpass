@@ -1,24 +1,10 @@
 <script setup lang="ts">
 import { Restaurant } from "~/modules/user-side/restaurants/types";
-
-const orders = ref(
-  await getOrders().then((orders) =>
-    orders?.filter((order) => {
-      return order?.state !== "Confirm";
-    })
-  )
+const orders = await getOrders().then((orders) =>
+  orders?.filter((order) => {
+    return order?.state !== "Confirm";
+  })
 );
-
-definePageMeta({
-  middleware: () => {
-    getOrders().then((ordersgot) => {
-      orders.value = ordersgot
-        ?.filter((order) => {
-          return order?.state !== "Confirm";
-        });
-    });
-  },
-});
 
 const restaurants = await getRestaurants();
 
@@ -29,9 +15,11 @@ function restaurantById(restaurantId: number): Restaurant | undefined {
 </script>
 
 <template>
-  <section v-if="orders?.length > 0" class="orders">
+  <section v-if="orders?.length ?? 0 > 0" class="orders">
     <div
-      v-for="order in orders?.sort((a, b) => new Date(a.timepayment) < new Date(b.timepayment) ? 1 : -1)"
+      v-for="order in orders?.sort((a, b) =>
+        new Date(a.timepayment) < new Date(b.timepayment) ? 1 : -1
+      )"
       :key="order.id"
       class="orders__order"
       @click="$router.push(`/order/${order.id}`)"
