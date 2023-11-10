@@ -24,7 +24,8 @@ onMenuScroll((scroll: number) => {
 });
 
 function handleDishSelect(dish: Dish) {
-  useCurrentDish(dish);
+  if (!dish.custom ?? 0) useCurrentDish(dish);
+  else useCustomDish(dish);
   showDishCard();
 }
 </script>

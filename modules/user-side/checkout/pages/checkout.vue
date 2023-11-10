@@ -100,6 +100,7 @@ async function handlePostOrder() {
   console.log("Order submitted!");
   refreshCart();
 
+  refreshNuxtData();
   navigateTo("/");
 }
 
