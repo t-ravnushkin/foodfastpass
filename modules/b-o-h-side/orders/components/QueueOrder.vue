@@ -19,17 +19,28 @@ function isSoon(timeSlot: string) {
   const hourDifference = hour - now.value.getHours();
   const minutesDifference = hourDifference * 60 + minute - now.value.getMinutes();
 
-  return minutesDifference <= 5;
+  return minutesDifference < 10;
+}
+
+function getStateClass(){
+  if(props.order.state === "Prepared"){
+    return "prepared"
+  }else if(props.order.state === "Cooking"){
+    if(isSoon(props.order.timeSlot)){
+      return "soon"
+    }
+  }
+  return ""
 }
 
 </script>
 
 <template>
-  <section class="order">
+  <section :class="['order', getStateClass()]">
 
     <div class="order__info">
 
-      <p class="order__number">#{{ order.id }}</p>
+      <p class="order__number">#{{ order.id }}{{ (order.takeaway ? "T" : "") }}</p>
 
       <div class="order__dishes">
         <div
@@ -42,7 +53,9 @@ function isSoon(timeSlot: string) {
         </div>
       </div>
 
-      <p :class="['order__timeslot', {'order__timeslot_soon': isSoon(order.timeSlot)}]">
+      <p :class="['order__timeslot',
+      getStateClass()
+       ]">
         {{ order.timeSlot }}
       </p>
 
@@ -111,7 +124,7 @@ function isSoon(timeSlot: string) {
     font: 400 normal 2.4rem/1.5 Inter, sans-serif;
 
     &_soon {
-      color: var(--red-color)
+      color: var(--black-color)
     }
   }
 
@@ -131,4 +144,16 @@ function isSoon(timeSlot: string) {
   }
 }
 
+.order.soon {
+  background: #FF6D6D;
+  box-shadow: none;
+}
+.order__timeslot.soon,
+.order__timeslot.prepared{
+  color: var(--black-color)
+}
+.order.prepared {
+  background: #FFC842;
+  box-shadow: none;
+}
 </style>

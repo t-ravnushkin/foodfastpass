@@ -23,6 +23,8 @@
     "@vueuse/core": "^10.2.1",
     "@vueuse/nuxt": "^10.2.1",
     "defu": "^6.1.2",
+    "event-source-polyfill": "^1.0.31",
+    "eventsource": "^2.0.2",
     "nuxt-stripe-module": "^3.2.0",
     "serve": "^14.2.1",
     "stripe": "^13.8.0",

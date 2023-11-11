@@ -1,5 +1,35 @@
 <script setup lang="ts">
+const timer = ref("")
+function upd_timer(){
+  const date = new Date();
+  let hours = String(date.getHours())
+  if(hours.length < 2){
+    hours = "0" + hours
+  }
+  let mins = String(date.getMinutes())
+  if(mins.length < 2){
+    mins = "0" + mins
+  }
+  let seconds = String(date.getSeconds())
+  if(seconds.length < 2){
+    seconds = "0" + seconds
+  }
+  timer.value = hours + ":" +
+    mins + ":" +
+    seconds
+}
 
+setInterval(upd_timer, 1000)
+const logoutVisible = ref(false)
+const logoutAnimation = ref("appear")
+async function close_logout(){
+  logoutAnimation.value = "disappear"
+  setTimeout(() => {
+    logoutVisible.value = false
+  logoutAnimation.value = "appear"
+
+  }, 190);
+}
 </script>
 
 <template>
@@ -9,8 +39,12 @@
       <MainLogo class="header__logo"/>
       <p class="header__logo-text">FoodFastPass</p>
     </div>
-
-    <p class="header__log-out" @click="navigateTo('/boh/auth')">Log out</p>
+    <p class="header__time">{{ timer }}</p>
+    <div class="header__profile-stuff">
+      <p v-if="logoutVisible" :class="'header__log-out ' + logoutAnimation" @click="navigateTo('/boh/auth')">Log out</p>
+      <Crossicon2 @click="close_logout" v-if="logoutVisible"></Crossicon2>
+      <ProfileIcon @click="logoutVisible=!logoutVisible" v-else></ProfileIcon>
+    </div>
 
   </header>
 </template>
@@ -32,10 +66,11 @@
 
   border-radius: 0 0 0.8rem 0.8rem;
   background: var(--white-color);
-
+  border-bottom: 1px solid;
+  border-color: #D7D6FF;
   /* shadow lg */
-  box-shadow: 0 12px 16px -4px rgba(54, 54, 171, 0.08),
-  0 4px 6px -2px rgba(54, 54, 171, 0.03);
+  // box-shadow: 0 12px 16px -4px rgba(54, 54, 171, 0.08),
+  // 0 4px 6px -2px rgba(54, 54, 171, 0.03);
 
   z-index: 2000;
 
@@ -62,4 +97,41 @@
   }
 }
 
+.header__time{
+  font: 500 normal 2.4rem Inter, sans-serif;
+}
+
+.header__profile-stuff{
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.header__log-out{
+  z-index: 0;
+  animation-duration: 0.2s;
+}
+
+.header__log-out.appear{
+  animation-name: appear;
+}
+.header__log-out.disappear{
+  animation-name: disappear;
+}
+
+@keyframes appear {
+  0%{
+    transform: translateX(2.5rem);
+  }
+  100%{
+    transform: translateX(0px);
+  }
+}
+@keyframes disappear {
+  0%{
+    transform: translateX(0px);
+  }
+  100%{
+    transform: translateX(2.5rem);
+  }
+}
 </style>
