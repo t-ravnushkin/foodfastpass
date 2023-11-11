@@ -5,6 +5,9 @@ import type { Order } from '~/modules/b-o-h-side/orders/types';
 
 const props = defineProps<{
   order: Order,
+  openedOrderId : Number,
+  setOpenedOrderId : Function,
+  orderStatusChanged : Function
 }>();
 
 
@@ -18,8 +21,8 @@ function isSoon(timeSlot: string) {
 
   const hourDifference = hour - now.value.getHours();
   const minutesDifference = hourDifference * 60 + minute - now.value.getMinutes();
-
-  return minutesDifference < 10;
+  // console.log(minutesDifference)
+  return Math.abs(minutesDifference) < 10;
 }
 
 function getStateClass(){
@@ -32,12 +35,33 @@ function getStateClass(){
   }
   return ""
 }
+const loading = ref(false)
+function button_finished(new_state : string){
+  loading.value = false
+  props.orderStatusChanged(props.order.id, new_state)
+}
+function go_prepare(){
+  loading.value = true
+  postPrepareOrder(props.order.id, () => button_finished("Prepared"))
+}
+
+function go_confirm(){
+  loading.value = true
+  postConfirmOrder(props.order.id, () => button_finished("Confirm"))
+}
+function orderClicked(){
+  if(props.openedOrderId === props.order.id){
+    props.setOpenedOrderId(-1)
+  }else{
+    props.setOpenedOrderId(props.order.id)
+  }
+}
 
 </script>
 
 <template>
-  <section :class="['order', getStateClass()]">
-
+  <section @click="orderClicked" :class="['order', getStateClass()]">
+ 
     <div class="order__info">
 
       <p class="order__number">#{{ order.id }}{{ (order.takeaway ? "T" : "") }}</p>
@@ -60,14 +84,22 @@ function getStateClass(){
       </p>
 
     </div>
-
-    <button
-      class="order__submit"
-      @click="postCompleteOrder(order.id, refreshOrders)"
-    >
-      <span>Complete</span>
-      <CompleteIcon/>
-    </button>
+    <template v-if="openedOrderId == order.id">
+      <button v-if="order.state === 'Cooking'" :disabled="loading"
+        class="order__button"
+        @click="go_prepare"
+      >
+        <span>Prepared</span>
+        <CompleteIcon/>
+      </button>
+      <button v-else :disabled="loading"
+        class="order__button"
+        @click="go_confirm"
+      >
+        <span>Confirm</span>
+        <CompleteIcon/>
+      </button>
+    </template>
 
   </section>
 </template>
@@ -85,7 +117,7 @@ function getStateClass(){
   0 4px 6px -2px rgba(54, 54, 171, 0.03);
 
   &__info {
-    margin-bottom: 5.4rem;
+    // margin-bottom: 5.4rem;
 
     display: grid;
     grid: auto / 6.4rem auto 6.4rem;
@@ -128,7 +160,8 @@ function getStateClass(){
     }
   }
 
-  &__submit {
+  &__button {
+    margin-top: 4rem;
     padding: 0.8rem 1.6rem;
 
     display: flex;
@@ -140,7 +173,7 @@ function getStateClass(){
 
     border-radius: 0.8rem;
     border: none;
-    background: var(--dark-color);
+    background: #00AD00;
   }
 }
 

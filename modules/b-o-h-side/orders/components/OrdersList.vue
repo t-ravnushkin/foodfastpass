@@ -1,22 +1,41 @@
 <script setup lang="ts">
+
 const pk = await getManagerRest()
 console.log(pk)
+const allOrders = (await getBOHOrders())
+function cmp(a, b){
+  if(get_mins(a.timeSlot) < get_mins(b.timeSlot)){
+    return -1
+  }else{
+    return 1
+  }
+}
+allOrders.sort(cmp)
+const orders = ref(allOrders)
 var socket = new WebSocket("wss://backhelp.foodfastpass.ie/ws/restaurant/" + pk.toString() + "/");
 socket.onopen = function() {
-  alert("Соединение установлено.");
+  console.log("Соединение установлено.");
 };
 
 socket.onclose = function(event) {
   if (event.wasClean) {
-    alert('Соединение закрыто чисто');
+    console.log('Соединение закрыто чисто');
   } else {
-    alert('Обрыв соединения'); // например, "убит" процесс сервера
+    console.log('Обрыв соединения'); // например, "убит" процесс сервера
   }
-  alert('Код: ' + event.code + ' причина: ' + event.reason);
+  console.log('Код: ' + event.code + ' причина: ' + event.reason);
 };
 
+function get_mins(timeSlot : String){
+  const [ hour, minute ] = timeSlot.split(':').map(n => parseInt(n));
+  return hour*60 + minute
+}
+
 socket.onmessage = function(event) {
-  alert("Получены данные " + event.data);
+  console.log("Получены данные " + event.data);
+  const new_orders = [...orders.value, JSON.parse((event.data).toString())]
+  new_orders.sort(cmp)
+  orders.value = new_orders
 };
 
 socket.onerror = function(error) {
@@ -24,9 +43,8 @@ socket.onerror = function(error) {
 };
 
 // const orders = ref([])
-const orders = ref((await getBOHOrders()));
-console.log(orders.value.length)
-console.log(orders.value)
+// console.log(orders.value.length)
+// console.log(orders.value)
 function get_cooking_orders(){
   return orders.value.filter((e) => e.state == "Cooking")
 }
@@ -40,6 +58,17 @@ const activeTab = ref("Active orders")
 function setActiveTab(new_tab : string){
   activeTab.value = new_tab
 }
+const openedOrderId = ref(-1)
+function setOpenedOrderId(new_id : number){
+  openedOrderId.value = new_id
+}
+function orderStatusChanged(order_id : number, new_state : string){
+  for(let i = 0; i < orders.value.length; i++){
+    if(orders.value[i].id === order_id){
+      orders.value[i].state = new_state
+    }
+  }
+}
 </script>
 
 <template>
@@ -50,15 +79,21 @@ function setActiveTab(new_tab : string){
   </div>
   <template v-if="activeTab === 'Active orders'">
     <div class="queue done">
-      <QueueOrder v-for="order in get_prepared_orders()" :key="order.orderId" :order="order" />
+      <QueueOrder v-for="order in get_prepared_orders()" :key="order.orderId" :order="order"
+      :opened-order-id="openedOrderId" :set-opened-order-id="setOpenedOrderId"
+       :order-status-changed="orderStatusChanged" />
     </div>
     <div class="queue">
-      <QueueOrder v-for="order in get_cooking_orders()" :key="order.orderId" :order="order" />
+      <QueueOrder v-for="order in get_cooking_orders()" :key="order.orderId" :order="order"
+      :opened-order-id="openedOrderId" :set-opened-order-id="setOpenedOrderId"
+       :order-status-changed="orderStatusChanged" />
     </div>
   </template>
   <template v-else-if="activeTab === 'Orders history'">
     <div class="queue">
-      <QueueOrder v-for="order in get_done_orders()" :key="order.orderId" :order="order" />
+      <QueueOrder v-for="order in get_done_orders()" :key="order.orderId" :order="order"
+      :opened-order-id="-1" :set-opened-order-id="() => {}"
+      :order-status-changed="() => {}"/>
     </div>
   </template>
   <template v-else>
