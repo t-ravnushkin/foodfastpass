@@ -82,6 +82,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
   }
 
   &__hour_slot {
+    flex-shrink: 0;
     width: 67px;
     height: 28px;
     display: flex;
@@ -94,11 +95,10 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
     font-size: 14px;
     line-height: 150%;
     color: #99999999;
-  }
-
-  &__hour_slot_selected {
-    background-color: #d6d6d6;
-    color: black;
+    &_selected {
+      background-color: #d6d6d6;
+      color: black;
+    }
   }
 
   &__slots {

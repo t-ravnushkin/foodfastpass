@@ -16,7 +16,7 @@ const chosenAllergens = reactive<string[]>([]);
 
 const chosenRating = ref<number>(0);
 
-const chosenMealType = ref<string>('Lunch');
+const chosenMealType = useLocalStorage<string>('chosenMealType', 'Lunch');
 
 
 const filtersChange = createEventHook();
