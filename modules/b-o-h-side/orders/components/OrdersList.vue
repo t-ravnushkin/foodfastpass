@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import audioFile from '@/assets/new_order_sound.mp3'
 const pk = await getManagerRest()
 console.log(pk)
 const allOrders = (await getBOHOrders())
@@ -36,6 +36,8 @@ socket.onmessage = function(event) {
   const new_orders = [...orders.value, JSON.parse((event.data).toString())]
   new_orders.sort(cmp)
   orders.value = new_orders
+  let audio = new Audio(audioFile)
+  audio.play()
 };
 
 socket.onerror = function(error) {
@@ -90,7 +92,7 @@ function orderStatusChanged(order_id : number, new_state : string){
     </div>
   </template>
   <template v-else-if="activeTab === 'Orders history'">
-    <div class="queue">
+    <div class="queue" :style="{'padding-top': '4rem'}">
       <QueueOrder v-for="order in get_done_orders()" :key="order.orderId" :order="order"
       :opened-order-id="-1" :set-opened-order-id="() => {}"
       :order-status-changed="() => {}"/>
@@ -104,14 +106,15 @@ function orderStatusChanged(order_id : number, new_state : string){
 <style scoped lang="scss">
 .queue {
   margin: 0 2.4rem 5.4rem 2.4rem;
-  padding-bottom: 5.4rem;
-
+  padding-bottom: 2.4rem;
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
 }
 .queue.done{
   border-bottom: 2px solid #6432F4;
+  padding-top: 4rem;
+
 }
 .queue__nav{
   display: flex;

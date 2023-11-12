@@ -1,14 +1,30 @@
 <script setup lang="ts">
-const products = ref(await getMenuRest())
+const products = await getMenuRest()
+console.log(products)
 const _meals = []
-for(let i in products.value){
-    if(_meals.find((e) => e===products.value[i].menuType[0]) === undefined)
-        _meals.push(products.value[i].menuType[0])
+const _categories = []
+const products_by_category = ref({})
+for(let i in products){
+    if(_meals.find((e) => e===products[i].menuType[0]) === undefined)
+        _meals.push(products[i].menuType[0])
+    if(_categories.find((e) => e===products[i].categories) === undefined){
+        _categories.push(products[i].categories)
+        products_by_category.value[products[i].categories] = [products[i]]
+    } else{
+        products_by_category.value[products[i].categories].push(products[i])
+    }
 }
 const meals = ref(_meals)
+const categories = ref(_categories)
 const activeTab = ref(meals.value[0])
 function setActiveTab(new_tab : string){
   activeTab.value = new_tab
+}
+function setProductStock(category, id, newValue){
+    for(let i = 0; i < products_by_category.value[category].length; i++){
+        if(products_by_category.value[category][i].id === id)
+            products_by_category.value[category][i].inStock = newValue
+    }
 }
 // const props = defineProps<{
 //   order: Order,
@@ -20,18 +36,33 @@ function setActiveTab(new_tab : string){
     <div class="invent__nav">
         <OrdersTab v-for="meal in meals" :name="meal" :key="meal" :active-tab="activeTab" :set-active-tab="setActiveTab"/>
     </div>
-    <div class="products-wrapper">
-        <div class="card" v-for="product in products">
-            aaa
+    <div v-for="category in categories">
+        <div class="category">{{ category }}:</div>
+        <div class="products-wrapper">
+            <Product v-for="product in products_by_category[category]" :key="product.id"
+            :product="product" :set-product-stock="setProductStock"/>
         </div>
     </div>
   </section>
 </template>
 
 <style scoped lang="scss">
+.category{
+    margin-top: 2rem;
+    margin-left: 2.4rem;
+    margin-right: 2.4rem;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Inter';
+}
 .products-wrapper{
+    gap: 1em;
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding-left: 2.4rem;
+    padding-right: 2.4rem;
+    padding-top: 2rem;
 }
 .invent__nav{
     margin-top: 2rem;

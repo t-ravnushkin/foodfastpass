@@ -14,6 +14,7 @@ const props = defineProps<{
 
 <style scoped lang="scss">
 .queue__tab{
+  font-family: 'Inter';
   width: 100%;
   border-radius: 8px;
   height: 40px;

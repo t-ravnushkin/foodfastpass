@@ -56,7 +56,25 @@ function orderClicked(){
     props.setOpenedOrderId(props.order.id)
   }
 }
-
+function getProductText(product : Object){
+  const customs = []
+  if(product.custom){
+    for(let i in product.custom){
+      for(let j in product.custom[i]){
+        if(j.taken){
+          customs.push(j.name)
+        }
+      }
+    }
+  }
+  let res = product.name
+  if(customs.length > 0){
+    res += " ("
+    res += customs.join(",")
+    res += ")"
+  }
+  return res
+}
 </script>
 
 <template>
@@ -73,7 +91,9 @@ function orderClicked(){
           class="order__position"
         >
           <p class="order__quantity">{{ order.quantity[product.id] }}x</p>
-          <p class="order__dish-name">{{ product.name }}</p>
+          <p class="order__dish-name">
+            {{ getProductText(product) }}
+          </p>
         </div>
       </div>
 
@@ -107,6 +127,7 @@ function orderClicked(){
 <style scoped lang="scss">
 
 .order {
+  font-family: 'Inter';
   padding: 2.4rem;
 
   border-radius: 1.6rem;
@@ -182,8 +203,10 @@ function orderClicked(){
   box-shadow: none;
 }
 .order__timeslot.soon,
-.order__timeslot.prepared{
-  color: var(--black-color)
+.order__timeslot.prepared,
+.order.prepared>.order__info>.order__dishes>.order__position>.order__quantity,
+.order.soon>.order__info>.order__dishes>.order__position>.order__quantity{
+  color: var(--black-color) !important;
 }
 .order.prepared {
   background: #FFC842;
