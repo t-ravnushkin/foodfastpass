@@ -5,7 +5,7 @@ const restaurantName = useRoute().params.restaurantName as string;
 
 const categories = useCategories(restaurantName);
 
-const {cart, customItems} = useCartStore();
+const { cart, customItems } = useCartStore();
 
 const { chosenMealType, onFiltersChange } = useFilters();
 
@@ -73,7 +73,11 @@ const customDish = useCustomDish();
 
     <MealType class="menu__meal" :meal-types="mealTypes" />
 
-    <ListOfCategories :categories="categories" class="menu__categories" />
+    <ListOfCategories
+      :is-empty="mealTypes.length === 0"
+      :categories="categories"
+      class="menu__categories"
+    />
 
     <TheDishFilters v-model:is-active="areFiltersActive" />
 
