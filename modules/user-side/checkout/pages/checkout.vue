@@ -15,10 +15,11 @@ const {
   cart,
   discount,
   refresh: refreshCart,
+  getRestaurantName,
 } = useCartStore();
 
 const restaurantName = computed(() => {
-  return Object.values(cart.value)[0].dish?.restaurantName;
+  return getRestaurantName();
 });
 
 const clientSecret = ref("");
@@ -35,7 +36,7 @@ async function checkPromocode() {
     method: "POST",
     body: {
       promocode: coupon.value,
-      restaurant: Object.values(cart.value)[0].dish.restaurantName,
+      restaurant: getRestaurantName(),
     },
   });
   discount.value = 0;
@@ -74,6 +75,7 @@ async function handlePostOrder() {
       return;
     }
   } catch (e) {
+    console.log("xhasdfh");
     onProcessing.value = false;
     wrongTimeError.value = true;
     return;

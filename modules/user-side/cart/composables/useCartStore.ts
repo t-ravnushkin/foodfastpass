@@ -156,7 +156,7 @@ function isCheckoutReady(): boolean {
     areMealTypesApproved,
     isAmountApproved,
     areAllInStock,
-    hasCustomErrors
+    !hasCustomErrors
   )
 
 

@@ -36,6 +36,14 @@ function getOrderById(orderId: string): Order | undefined {
         :cart="order?.products"
         :quantities="order?.quantity"
         :discount="order?.discount"
+        v-if="Object.keys(order.customizableOrder).length === 0"
+      />
+      <CustomizableOrderDetails
+        :cart="order?.customizableOrder"
+        :discount="order?.discount"
+        :total="order?.price"
+        :currency="order?.currency"
+        v-else
       />
       <CollectionDetails
         :payment-date-time="paymentDateTime"

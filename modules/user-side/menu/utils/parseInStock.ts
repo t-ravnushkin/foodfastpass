@@ -11,17 +11,18 @@ export default function (rawDishes: RawDish[]): InStockInfo {
         const custom: CustomGroup[] = [];
         if (dish.customizableList.length > 0) {
             console.log(dish.customizableList);
-            for (const group of dish.customizableList[0]) {
+            for (const group of dish.customizableList) {
+                const name = Object.keys(group)[0];
                 const items: CustomItem[] = [];
-                for (const item of group.text) {
+                for (const item of group[name]) {
                     items.push({
-                        name: item[0],
-                        available: item[1],
-                        removed: false,
+                        name: Object.keys(item)[0],
+                        available: !!Object.values(item)[0],
+                        removed: !Object.values(item)[0],
                     })
                 }
                 custom.push({
-                    name: group.name,
+                    name,
                     items: items
                 })
             }
