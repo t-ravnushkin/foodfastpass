@@ -61,8 +61,8 @@ function getProductText(product : Object){
   if(product.custom){
     for(let i in product.custom){
       for(let j in product.custom[i]){
-        if(j.taken){
-          customs.push(j.name)
+        if(product.custom[i][j].taken){
+          customs.push(product.custom[i][j].name)
         }
       }
     }
@@ -86,7 +86,7 @@ function getProductText(product : Object){
 
       <div class="order__dishes">
         <div
-          v-for="product in order.products"
+          v-for="product in order.customizableOrder"
           :key="product.dishName"
           class="order__position"
         >

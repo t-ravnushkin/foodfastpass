@@ -1,42 +1,35 @@
 <script setup lang="ts">
+
 const props = defineProps<{
     product : Object,
-    setProductStock : Function
+    setCustomProductStock : Function,
+    getIfOutOfStock : Function
 }>();
 const loading = ref(false)
-function switchDone(newValue : boolean){
-    props.setProductStock(props.product.categories, props.product.id, newValue)
-    loading.value = false
-}
-function outOfStock(){
-    if(!props.product.inStock){
-        return
-    }
-    loading.value = true
-    postProductOutOfStock(props.product.id, ()=>switchDone(false))
-}
-function inStock(){
-    if(props.product.inStock){
-        return
-    }
-    loading.value = true
-    postProductInStock(props.product.id, ()=>switchDone(true))
-}
+const showModal = ref(false)
 
+function closeModal(){
+    showModal.value = false
+}
+function openModal(){
+    showModal.value = true
+}
 </script>
 
 <template>
+    <Modal v-if="showModal" :product="product" :close-modal="closeModal"
+     :set-custom-product-stock="setCustomProductStock"/>
     <div class="card">
         <span>{{ product.name }}</span>
         <div>
-            <button :disabled="loading" :class="['inventory-btn in-stock', {'active' : product.inStock}]"
-            @click="inStock">
-                In Stock
+            <button :disabled="loading" :class="['inventory-btn manage-stock active']"
+            @click="openModal">
+                Manage stock
             </button>
         </div>
         <div>
-            <button :disabled="loading" :class="['inventory-btn out-stock' , {'active' : !product.inStock}]"
-            @click="outOfStock">
+            <button :disabled="loading" :class="['inventory-btn out-stock' ,
+            {'active' : getIfOutOfStock(product.categories, product.id)}]">
                 Out of Stock
             </button>
         </div>
@@ -58,8 +51,8 @@ function inStock(){
 .inventory-btn.active:disabled{
     opacity: 80%;
 }
-.in-stock{
-    background: #349F4C;
+.manage-stock{
+    background: #6432F4;
 }
 .out-stock{
     background: #FF5353;

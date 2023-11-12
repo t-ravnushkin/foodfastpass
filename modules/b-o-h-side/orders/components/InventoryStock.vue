@@ -1,31 +1,75 @@
 <script setup lang="ts">
-const products = await getMenuRest()
-console.log(products)
+const _products = await getMenuRest()
+console.log(_products)
 const _meals = []
-const _categories = []
-const products_by_category = ref({})
-for(let i in products){
-    if(_meals.find((e) => e===products[i].menuType[0]) === undefined)
-        _meals.push(products[i].menuType[0])
-    if(_categories.find((e) => e===products[i].categories) === undefined){
-        _categories.push(products[i].categories)
-        products_by_category.value[products[i].categories] = [products[i]]
-    } else{
-        products_by_category.value[products[i].categories].push(products[i])
+const products = ref({})
+for(let i in _products){
+    for(let j in _products[i].menuType){
+        const mt = _products[i].menuType[j]
+        if(_meals.find((e) => e===mt) === undefined){
+            _meals.push(mt)
+            products.value[mt] = {}
+        }
+        if(!products.value[mt][_products[i].categories]){
+            products.value[mt][_products[i].categories] = [_products[i]]
+        } else{
+            products.value[mt][_products[i].categories].push(_products[i])
+        }
     }
 }
 const meals = ref(_meals)
-const categories = ref(_categories)
 const activeTab = ref(meals.value[0])
 function setActiveTab(new_tab : string){
   activeTab.value = new_tab
 }
 function setProductStock(category, id, newValue){
-    for(let i = 0; i < products_by_category.value[category].length; i++){
-        if(products_by_category.value[category][i].id === id)
-            products_by_category.value[category][i].inStock = newValue
+    for(let i = 0; i < products.value[activeTab.value][category].length; i++){
+        if(products.value[activeTab.value][category][i].id === id)
+            products.value[activeTab.value][category][i].inStock = newValue
     }
 }
+function setCustomProductStock(category, id, icategory, iname, newValue){
+    for(let i = 0; i < products.value[activeTab.value][category].length; i++){
+        if(products.value[activeTab.value][category][i].id === id){
+            for(let _cati in products.value[activeTab.value][category][i].customizableList){
+                if(Object.keys(
+                    products.value[activeTab.value][category][i].customizableList[_cati]
+                )[0] === icategory){
+                    for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
+                        if(Object.keys(
+                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
+                        )[0] === iname){
+                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname] = newValue
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+function getIfOutOfStock(category, id){
+    let cnt = 0;
+    for(let i = 0; i < products.value[activeTab.value][category].length; i++){
+        if(products.value[activeTab.value][category][i].id === id){
+            for(let _cati in products.value[activeTab.value][category][i].customizableList){
+                const icategory = Object.keys(
+                    products.value[activeTab.value][category][i].customizableList[_cati]
+                )[0]
+                for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
+                    const iname = Object.keys(
+                        products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
+                    )[0]
+                    if(products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname]){
+                        cnt++;
+                    }
+                }
+            }
+        }
+    }
+    if(cnt == 0)return 1;
+    return 0;
+}
+console.log(products.value)
 // const props = defineProps<{
 //   order: Order,
 // }>();
@@ -36,11 +80,15 @@ function setProductStock(category, id, newValue){
     <div class="invent__nav">
         <OrdersTab v-for="meal in meals" :name="meal" :key="meal" :active-tab="activeTab" :set-active-tab="setActiveTab"/>
     </div>
-    <div v-for="category in categories">
+    <div v-for="category in Object.keys(products[activeTab])">
         <div class="category">{{ category }}:</div>
         <div class="products-wrapper">
-            <Product v-for="product in products_by_category[category]" :key="product.id"
-            :product="product" :set-product-stock="setProductStock"/>
+            <template v-for="product in products[activeTab][category]" :key="product.id">
+                <Product v-if="Object.keys(product.customizableList).length === 0" :product="product"
+                :set-product-stock="setProductStock"/>
+                <CustomProduct v-else :product="product" :set-custom-product-stock="setCustomProductStock"
+                :get-if-out-of-stock="getIfOutOfStock"/>
+            </template>
         </div>
     </div>
   </section>
