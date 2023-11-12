@@ -88,12 +88,11 @@ const passwordHidden = ref(true);
           class="registration__field"
         />
         <EyeIcon
-          height="1.5rem"
+          height="2.0rem"
           :is-closed="!passwordHidden"
           style="
             margin-left: -3.5rem;
             vertical-align: middle;
-            margin-top: -1%;
             align-self: stretch;
           "
           @click="passwordHidden = !passwordHidden"

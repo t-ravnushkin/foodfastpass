@@ -3,6 +3,8 @@ import bohGetUserToken from "../utils/bohGetUserToken";
 const email = ref("");
 const username = ref("");
 const password = ref("");
+const passwordHidden = ref(true);
+
 
 const isSubmitReady = computed(() => {
   const isNotEmpty = username.value !== "" && password.value !== "";
@@ -54,10 +56,20 @@ function submit() {
           <p class="auth__title">Password</p>
           <input
             v-model="password"
-            type="password"
+            :type="passwordHidden ? 'password' : 'text'"
             placeholder="••••••••"
             class="auth__field"
           />
+          <EyeIcon
+          height="2.0rem"
+          :is-closed="!passwordHidden"
+          style="
+            margin-left: -3.5rem;
+            vertical-align: middle;
+            align-self: stretch;
+          "
+          @click="passwordHidden = !passwordHidden"
+        />
         </div>
       </section>
 
@@ -69,8 +81,7 @@ function submit() {
       </button>
 
       <p class="auth__bottom-text">
-        For password and account management issues please contact our customer
-        service.
+        For any questions, please refer to our support service at hello@foodfastpass.ie
       </p>
     </main>
 
