@@ -1,13 +1,11 @@
 <script setup lang="ts">
 const props = defineProps<{
-  inCheckout?: boolean;
   open: boolean;
 }>();
 const emits = defineEmits(["update:open"]);
 
 function handleClose() {
   emits("update:open", false);
-  if (props.inCheckout) navigateTo("/cart-pre/");
 }
 </script>
 
@@ -16,13 +14,11 @@ function handleClose() {
     <div class="backdrop" @click="handleClose">
       <div class="modal" @click.stop>
         <p class="modal_text">
-          One or more items in your cart are out of stock. Please remove them
+          Error! Selected timeslot is no longer available. Please update the
+          page and select a new timeslot.
         </p>
-        <button class="modal_button" @click="handleClose" v-if="!inCheckout">
-          Ok
-        </button>
-        <button class="modal_button" @click="handleClose" v-else>
-          Back to cart
+        <button class="modal_button" @click="handleClose">
+          Update the page
         </button>
       </div>
     </div>
@@ -45,7 +41,7 @@ function handleClose() {
 
 .modal {
   width: 291px;
-  height: 133px;
+  height: 189px;
   border-radius: 18px;
   background: #fafafa;
   display: flex;

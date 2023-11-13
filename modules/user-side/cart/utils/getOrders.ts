@@ -10,7 +10,7 @@ export default async function (): Promise<Order[] | undefined> {
     return;
   }
 
-  const { data, refresh } = await useCustomFetch(
+  const { data: userOrderList, refresh } = await useCustomFetch(
     '/order/GetUserOrders/',
     {
       method: 'GET',
@@ -21,7 +21,7 @@ export default async function (): Promise<Order[] | undefined> {
   );
 
 
-  console.log(data.value)
+  console.log(userOrderList.value)
 
-  return data.value as Order[];
+  return userOrderList.value as Order[];
 }

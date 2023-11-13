@@ -54,9 +54,15 @@ watch(coupon, () => {
   discount.value = 0;
 });
 
+const hasTimeslotError = ref(false);
+
 async function handlePostOrder() {
   if (!verifyCart()) {
     hasOutOfStock.value = true;
+    return;
+  }
+  refreshNuxtData("timeSlotData");
+  if (hasTimeslotError.value) {
     return;
   }
   onProcessing.value = true;
@@ -102,7 +108,7 @@ async function handlePostOrder() {
   console.log("Order submitted!");
   refreshCart();
 
-  refreshNuxtData();
+  refreshNuxtData("userOrderList");
   navigateTo("/");
 }
 
@@ -116,6 +122,7 @@ const hasOutOfStock = ref(false);
 <template>
   <client-only>
     <OutOfStockError v-model:open="hasOutOfStock" in-checkout />
+    <TimeSlotErrorModal v-model:open="hasTimeslotError" />
     <CheckoutHeader :restaurantName="restaurantName" />
     <div class="checkout">
       <TakeAwayForm v-model="isTakeaway" />
@@ -124,6 +131,7 @@ const hasOutOfStock = ref(false);
         :restaurantName="restaurantName"
         v-model:timeSlot="currentTimeslot"
         v-model:isExpanded="isTimeslotExpanded"
+        v-model:has-timeslot-error="hasTimeslotError"
       />
       <CheckoutCouponForm
         v-show="!isTimeslotExpanded"

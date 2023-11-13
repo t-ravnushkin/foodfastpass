@@ -3,8 +3,13 @@ const props = defineProps<{
   timeSlot: { start: string; end: string };
   restaurantName: string;
   isExpanded: boolean;
+  hasTimeslotError: boolean;
 }>();
-const emits = defineEmits(["update:isExpanded", "update:timeSlot"]);
+const emits = defineEmits([
+  "update:isExpanded",
+  "update:timeSlot",
+  "update:hasTimeslotError",
+]);
 
 const timeslotsByHour = ref(new Map<string, string[]>());
 const timeslots = await getTimeslots(props.restaurantName).then((data) => {
@@ -19,6 +24,13 @@ const timeslots = await getTimeslots(props.restaurantName).then((data) => {
   return data;
 });
 emits("update:timeSlot", { start: timeslots[0], end: timeslots[0] });
+
+const hasError = computed(() => {
+  return !timeslots.includes(props.timeSlot.start);
+});
+watch(hasError, () => {
+  emits("update:hasTimeslotError", hasError.value);
+});
 
 function toggleTimeSlots() {
   emits("update:isExpanded", !props.isExpanded);
