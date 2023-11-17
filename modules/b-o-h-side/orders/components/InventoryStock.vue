@@ -29,19 +29,19 @@ function setProductStock(category, id, newValue){
     }
 }
 function setCustomProductStock(category, id, icategory, iname, newValue){
+    console.log(icategory, iname)
     for(let i = 0; i < products.value[activeTab.value][category].length; i++){
         if(products.value[activeTab.value][category][i].id === id){
-            for(let _cati in products.value[activeTab.value][category][i].customizableList){
-                if(Object.keys(
-                    products.value[activeTab.value][category][i].customizableList[_cati]
-                )[0] === icategory){
-                    for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
-                        if(Object.keys(
-                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
-                        )[0] === iname){
-                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname] = newValue
-                        }
-                    }
+            products.value[activeTab.value][category][i].customizableList[icategory][iname] = newValue
+        }
+    }
+}
+function setCustomProductOutOfStock(category, id){
+    for(let i = 0; i < products.value[activeTab.value][category].length; i++){
+        if(products.value[activeTab.value][category][i].id === id){
+            for(let cati in products.value[activeTab.value][category][i].customizableList){
+                for(let itemi in products.value[activeTab.value][category][i].customizableList[cati]){
+                    products.value[activeTab.value][category][i].customizableList[cati][itemi] = false
                 }
             }
         }
@@ -51,15 +51,9 @@ function getIfOutOfStock(category, id){
     let cnt = 0;
     for(let i = 0; i < products.value[activeTab.value][category].length; i++){
         if(products.value[activeTab.value][category][i].id === id){
-            for(let _cati in products.value[activeTab.value][category][i].customizableList){
-                const icategory = Object.keys(
-                    products.value[activeTab.value][category][i].customizableList[_cati]
-                )[0]
-                for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
-                    const iname = Object.keys(
-                        products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
-                    )[0]
-                    if(products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname]){
+            for(let cati in products.value[activeTab.value][category][i].customizableList){
+                for(let itemi in products.value[activeTab.value][category][i].customizableList[cati]){
+                    if(products.value[activeTab.value][category][i].customizableList[cati][itemi]){
                         cnt++;
                     }
                 }
@@ -87,7 +81,8 @@ console.log(products.value)
                 <Product v-if="Object.keys(product.customizableList).length === 0" :product="product"
                 :set-product-stock="setProductStock"/>
                 <CustomProduct v-else :product="product" :set-custom-product-stock="setCustomProductStock"
-                :get-if-out-of-stock="getIfOutOfStock"/>
+                :get-if-out-of-stock="getIfOutOfStock"
+                :set-custom-product-out-of-stock="setCustomProductOutOfStock"/>
             </template>
         </div>
     </div>

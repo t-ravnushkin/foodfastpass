@@ -3,11 +3,19 @@
 const props = defineProps<{
     product : Object,
     setCustomProductStock : Function,
-    getIfOutOfStock : Function
+    getIfOutOfStock : Function,
+    setCustomProductOutOfStock : Function
 }>();
 const loading = ref(false)
 const showModal = ref(false)
-
+function switchDone(newValue : boolean){
+    props.setCustomProductOutOfStock(props.product.categories, props.product.id)
+    loading.value = false
+}
+function outOfStock(){
+    loading.value = true
+    postProductOutOfStock(props.product.id, ()=>switchDone(false))
+}
 function closeModal(){
     showModal.value = false
 }
@@ -29,7 +37,8 @@ function openModal(){
         </div>
         <div>
             <button :disabled="loading" :class="['inventory-btn out-stock' ,
-            {'active' : getIfOutOfStock(product.categories, product.id)}]">
+            {'active' : getIfOutOfStock(product.categories, product.id)}]"
+            @click="outOfStock">
                 Out of Stock
             </button>
         </div>
@@ -40,9 +49,9 @@ function openModal(){
 .inventory-btn{
     opacity: 0.5;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 4px;
     border: none;
-    height: 27px;
+    height: 50px;
     margin-top: 1rem;
     font-size: 15px;
     font-family: 'Inter';
@@ -53,6 +62,7 @@ function openModal(){
 }
 .manage-stock{
     background: #6432F4;
+    color: #FFFFFF;
 }
 .out-stock{
     background: #FF5353;
