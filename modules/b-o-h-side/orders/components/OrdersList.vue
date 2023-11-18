@@ -30,14 +30,16 @@ function get_mins(timeSlot : String){
   const [ hour, minute ] = timeSlot.split(':').map(n => parseInt(n));
   return hour*60 + minute
 }
-
+const audio = new Audio(audioFile)
+audio.autoplay = true
+audio.src = "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
 socket.onmessage = function(event) {
   console.log("Получены данные " + event.data);
   const new_orders = [...orders.value, JSON.parse((event.data).toString())]
   new_orders.sort(cmp)
   orders.value = new_orders
-  let audio = new Audio(audioFile)
-  audio.play()
+  audio.src = audioFile
+  // audio.play()
 };
 
 socket.onerror = function(error) {
@@ -48,13 +50,13 @@ socket.onerror = function(error) {
 // console.log(orders.value.length)
 // console.log(orders.value)
 function get_cooking_orders(){
-  return orders.value.filter((e) => e.state == "Cooking")
+  return orders.value.filter((e) => e.state === "Cooking")
 }
 function get_prepared_orders(){
-  return orders.value.filter((e) => e.state == "Prepared")
+  return orders.value.filter((e) => e.state === "Prepared")
 }
 function get_done_orders(){
-  return orders.value.filter((e) => e.state == "Confirm")
+  return orders.value.filter((e) => e.state === "Confirm")
 }
 const activeTab = ref("Active orders")
 function setActiveTab(new_tab : string){

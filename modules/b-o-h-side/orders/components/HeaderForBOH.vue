@@ -21,13 +21,19 @@ function upd_timer(){
 
 setInterval(upd_timer, 1000)
 const logoutVisible = ref(false)
-const logoutAnimation = ref("appear")
+const logoutAnimation = ref("")
 async function close_logout(){
   logoutAnimation.value = "disappear"
   setTimeout(() => {
     logoutVisible.value = false
+    logoutAnimation.value = ""
+  }, 190);
+}
+async function open_logout(){
+  logoutVisible.value = true
   logoutAnimation.value = "appear"
-
+  setTimeout(() => {
+    logoutAnimation.value = ""
   }, 190);
 }
 </script>
@@ -41,9 +47,11 @@ async function close_logout(){
     </div>
     <p class="header__time">{{ timer }}</p>
     <div class="header__profile-stuff">
-      <p v-if="logoutVisible" :class="'header__log-out ' + logoutAnimation" @click="navigateTo('/boh/auth')">Log out</p>
+      <p :class="['header__log-out', logoutAnimation,
+       {'visible' : logoutVisible}]"
+       @click="navigateTo('/boh/auth')">Log out</p>
       <Crossicon2 @click="close_logout" v-if="logoutVisible"></Crossicon2>
-      <ProfileIcon @click="logoutVisible=!logoutVisible" v-else></ProfileIcon>
+      <ProfileIcon @click="open_logout" v-else></ProfileIcon>
     </div>
 
   </header>
@@ -72,7 +80,7 @@ async function close_logout(){
   // box-shadow: 0 12px 16px -4px rgba(54, 54, 171, 0.08),
   // 0 4px 6px -2px rgba(54, 54, 171, 0.03);
 
-  z-index: 2000;
+  z-index: 200;
 
   &__title{
     display: flex;
@@ -109,6 +117,10 @@ async function close_logout(){
 .header__log-out{
   z-index: 0;
   animation-duration: 0.2s;
+  visibility: hidden;
+}
+.header__log-out.visible{
+  visibility: visible;
 }
 
 .header__log-out.appear{

@@ -25,29 +25,32 @@ function inStock(category : string, name : string){
     <div class="modal" @click="closeModal">
         <div class="modal-dialog" @click="e => e.stopPropagation()">
             <div class="modal-header">
+            <span class="modal-name">
+                {{product.name}}
+            </span>
             <span class="modal-close" @click="closeModal">
                 <Closeicon/>
             </span>
             </div>
             <div class="modal-body">
                 <div class="modal-content">
-                    <template v-for="_category in product.customizableList">
-                        <template v-for="category in Object.keys(_category)">
-                            <template v-for="item in _category[category]" :key="Object.keys(item)[0]"> 
+                    <template v-for="category in Object.keys(product.customizableList)">
+                        <template v-for="item in Object.keys(product.customizableList[category])"
+                            :key="item"> 
                                 <div class="item-name">
-                                    {{ Object.keys(item)[0] }}
+                                    {{ item }}
                                 </div>
                                 <button :disabled="loading" :class="['inventory-btn in-stock', {
-                                    'active' : item[Object.keys(item)[0]]
-                                }]" @click="() => inStock(category, Object.keys(item)[0])">
+                                    'active' : product.customizableList[category][item]
+                                }]" @click="() => inStock(category, item)">
                                     In stock
                                 </button>
                                 <button :disabled="loading" :class="['inventory-btn out-stock', {
-                                    'active' : !item[Object.keys(item)[0]]
-                                }]" @click="() => outOfStock(category, Object.keys(item)[0])">
+                                    'active' : !product.customizableList[category][item]
+                                }]" @click="() => outOfStock(category, item)">
                                     Out stock
                                 </button>
-                            </template>
+                                <div class="row-border"></div>
                         </template>
                     </template>
                 </div>
@@ -57,6 +60,15 @@ function inStock(category : string, name : string){
 </template>
 
 <style scoped lang="scss">
+.modal-name{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Inter';
+}
+.row-border{
+    border-top: 1px solid #B8B8B8;
+    grid-column: 1 / 5;
+}
 .row-wrap{
     display: flex;
     justify-content: space-between;
@@ -76,9 +88,9 @@ function inStock(category : string, name : string){
 .inventory-btn{
     opacity: 0.5;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 4px;
     border: none;
-    height: 27px;
+    height: 50px;
     margin-top: 1rem;
     font-size: 15px;
     font-family: 'Inter';
@@ -89,6 +101,7 @@ function inStock(category : string, name : string){
 }
 .in-stock{
     background: #349F4C;
+    color: #FFFFFF;
 }
 .out-stock{
     background: #FF5353;
@@ -136,7 +149,7 @@ function inStock(category : string, name : string){
 .modal-footer {
     display: flex;
     align-items: center;
-    padding: 12px 12px 0;
+    padding: 12px 12px 0 5px;
 }
 
 .modal-header {
@@ -158,7 +171,7 @@ function inStock(category : string, name : string){
     padding: 8px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-    gap: 1rem
+    gap: 1rem;
 }
 
 .modal-title {

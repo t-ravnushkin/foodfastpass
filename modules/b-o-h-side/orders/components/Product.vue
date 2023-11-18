@@ -47,9 +47,9 @@ function inStock(){
 .inventory-btn{
     opacity: 0.5;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 4px;
     border: none;
-    height: 27px;
+    height: 50px;
     margin-top: 1rem;
     font-size: 15px;
     font-family: 'Inter';
@@ -60,6 +60,7 @@ function inStock(){
 }
 .in-stock{
     background: #349F4C;
+    color: #FFFFFF;
 }
 .out-stock{
     background: #FF5353;

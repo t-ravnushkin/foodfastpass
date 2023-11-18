@@ -10,11 +10,7 @@ const props = defineProps<{
   orderStatusChanged : Function
 }>();
 
-
 const now = useNow();
-
-const refreshOrders = inject('refreshOrders');
-
 
 function isSoon(timeSlot: string) {
   const [ hour, minute ] = timeSlot.split(':').map(n => parseInt(n));
@@ -22,7 +18,7 @@ function isSoon(timeSlot: string) {
   const hourDifference = hour - now.value.getHours();
   const minutesDifference = hourDifference * 60 + minute - now.value.getMinutes();
   // console.log(minutesDifference)
-  return Math.abs(minutesDifference) < 10;
+  return Math.abs(minutesDifference) <= 10;
 }
 
 function getStateClass(){
@@ -82,7 +78,7 @@ function getProductText(product : Object){
  
     <div class="order__info">
 
-      <p class="order__number">#{{ order.id }}{{ (order.takeaway ? "T" : "") }}</p>
+      <p class="order__number">#{{ order.id }}{{ (order.takeaway ? "&#8209;T" : "") }}</p>
 
       <div class="order__dishes">
         <div
@@ -90,7 +86,7 @@ function getProductText(product : Object){
           :key="product.dishName"
           class="order__position"
         >
-          <p class="order__quantity">{{ order.quantity[product.id] }}x</p>
+          <p class="order__quantity">{{ product.quantity }}x</p>
           <p class="order__dish-name">
             {{ getProductText(product) }}
           </p>
@@ -163,18 +159,18 @@ function getProductText(product : Object){
 
   &__quantity {
     color: var(--dark-gray-color);
-    font: 400 normal 1.6rem/1.5 Inter, sans-serif;
+    font: 400 normal 20px Inter, sans-serif;
     margin-left: 30px;
   }
 
   &__dish-name {
     color: var(--black-color);
-    font: 400 normal 1.6rem/1.5 Inter, sans-serif;
+    font: 500 normal 20px Inter, sans-serif;
   }
 
   &__timeslot {
     color: var(--dark-color);
-    font: 400 normal 2.4rem/1.5 Inter, sans-serif;
+    font: 500 normal 2.4rem/1.5 Inter, sans-serif;
 
     &_soon {
       color: var(--black-color)

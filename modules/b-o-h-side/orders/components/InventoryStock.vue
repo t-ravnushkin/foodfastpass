@@ -1,24 +1,65 @@
 <script setup lang="ts">
 const _products = await getMenuRest()
 console.log(_products)
-const _meals = []
+const meals = ref([])
 const products = ref({})
-for(let i in _products){
-    for(let j in _products[i].menuType){
-        const mt = _products[i].menuType[j]
-        if(_meals.find((e) => e===mt) === undefined){
-            _meals.push(mt)
+function add_product(i : Object){
+    for(let j in i.menuType){
+        const mt = i.menuType[j]
+        if(meals.value.find((e) => e===mt) === undefined){
+            meals.value.push(mt)
             products.value[mt] = {}
         }
-        if(!products.value[mt][_products[i].categories]){
-            products.value[mt][_products[i].categories] = [_products[i]]
+        if(!products.value[mt][i.categories]){
+            products.value[mt][i.categories] = [i]
         } else{
-            products.value[mt][_products[i].categories].push(_products[i])
+            products.value[mt][i.categories].push(i)
         }
     }
 }
-const meals = ref(_meals)
+function del_product(i : Object){
+    for(let j in meals.value){
+        const mt = meals.value[j]
+        for(let prod_index = 0; prod_index < products.value[mt][i.categories].length; prod_index++){
+            if(products.value[mt][i.categories][prod_index].id == i.id){
+                products.value[mt][i.categories].splice(prod_index, 1)
+                break
+            }
+        }
+    }
+}
+for(let i in _products){
+    add_product(_products[i])
+}
 const activeTab = ref(meals.value[0])
+const pk = await getManagerRest()
+var socket = new WebSocket("wss://backhelp.foodfastpass.ie/ws/newRestProduct/" + pk.toString() + "/");
+socket.onopen = function() {
+  console.log("Соединение установлено.");
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    console.log('Соединение закрыто чисто');
+  } else {
+    console.log('Обрыв соединения'); // например, "убит" процесс сервера
+  }
+  console.log('Код: ' + event.code + ' причина: ' + event.reason);
+};
+
+socket.onmessage = function(event) {
+  console.log("Получены данные " + event.data);
+  const new_product = JSON.parse((event.data).toString())
+  del_product(new_product)
+  if(new_product.operation === "delete"){
+    return
+  }
+  add_product(new_product)
+};
+
+socket.onerror = function(error) {
+  alert("Ошибка " + error.message);
+};
 function setActiveTab(new_tab : string){
   activeTab.value = new_tab
 }
@@ -29,19 +70,19 @@ function setProductStock(category, id, newValue){
     }
 }
 function setCustomProductStock(category, id, icategory, iname, newValue){
+    console.log(icategory, iname)
     for(let i = 0; i < products.value[activeTab.value][category].length; i++){
         if(products.value[activeTab.value][category][i].id === id){
-            for(let _cati in products.value[activeTab.value][category][i].customizableList){
-                if(Object.keys(
-                    products.value[activeTab.value][category][i].customizableList[_cati]
-                )[0] === icategory){
-                    for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
-                        if(Object.keys(
-                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
-                        )[0] === iname){
-                            products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname] = newValue
-                        }
-                    }
+            products.value[activeTab.value][category][i].customizableList[icategory][iname] = newValue
+        }
+    }
+}
+function setCustomProductOutOfStock(category, id){
+    for(let i = 0; i < products.value[activeTab.value][category].length; i++){
+        if(products.value[activeTab.value][category][i].id === id){
+            for(let cati in products.value[activeTab.value][category][i].customizableList){
+                for(let itemi in products.value[activeTab.value][category][i].customizableList[cati]){
+                    products.value[activeTab.value][category][i].customizableList[cati][itemi] = false
                 }
             }
         }
@@ -51,15 +92,9 @@ function getIfOutOfStock(category, id){
     let cnt = 0;
     for(let i = 0; i < products.value[activeTab.value][category].length; i++){
         if(products.value[activeTab.value][category][i].id === id){
-            for(let _cati in products.value[activeTab.value][category][i].customizableList){
-                const icategory = Object.keys(
-                    products.value[activeTab.value][category][i].customizableList[_cati]
-                )[0]
-                for(let _item in products.value[activeTab.value][category][i].customizableList[_cati][icategory]){
-                    const iname = Object.keys(
-                        products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item]
-                    )[0]
-                    if(products.value[activeTab.value][category][i].customizableList[_cati][icategory][_item][iname]){
+            for(let cati in products.value[activeTab.value][category][i].customizableList){
+                for(let itemi in products.value[activeTab.value][category][i].customizableList[cati]){
+                    if(products.value[activeTab.value][category][i].customizableList[cati][itemi]){
                         cnt++;
                     }
                 }
@@ -70,6 +105,17 @@ function getIfOutOfStock(category, id){
     return 0;
 }
 console.log(products.value)
+const mealsOrder = {
+    'Breakfast' : 0,
+    'Lunch' : 1,
+    'Dinner' : 2
+}
+function cmpMeal(a : string, b : string){
+    const na = (mealsOrder[a] ? mealsOrder[a] : 0)
+    const nb = (mealsOrder[b] ? mealsOrder[b] : 0)
+    if(na < nb)return -1
+    return 1
+}
 // const props = defineProps<{
 //   order: Order,
 // }>();
@@ -78,7 +124,7 @@ console.log(products.value)
 <template>
   <section>
     <div class="invent__nav">
-        <OrdersTab v-for="meal in meals" :name="meal" :key="meal" :active-tab="activeTab" :set-active-tab="setActiveTab"/>
+        <OrdersTab v-for="meal in meals.toSorted(cmpMeal)" :name="meal" :key="meal" :active-tab="activeTab" :set-active-tab="setActiveTab"/>
     </div>
     <div v-for="category in Object.keys(products[activeTab])">
         <div class="category">{{ category }}:</div>
@@ -87,7 +133,8 @@ console.log(products.value)
                 <Product v-if="Object.keys(product.customizableList).length === 0" :product="product"
                 :set-product-stock="setProductStock"/>
                 <CustomProduct v-else :product="product" :set-custom-product-stock="setCustomProductStock"
-                :get-if-out-of-stock="getIfOutOfStock"/>
+                :get-if-out-of-stock="getIfOutOfStock"
+                :set-custom-product-out-of-stock="setCustomProductOutOfStock"/>
             </template>
         </div>
     </div>
