@@ -165,14 +165,14 @@ const timeslotform = ref(null);
 
 <style scoped lang="scss">
 .checkout {
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 
   &_main {
-    height: calc(100vh - 84px - 135px);
+    height: calc(100dvh - 84px - 135px);
     flex-shrink: 0;
     overflow: hidden;
     width: 100%;

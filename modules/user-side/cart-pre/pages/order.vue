@@ -16,7 +16,10 @@ const { isEmpty } = useCartStore();
   <client-only>
     <div class="cart">
       <OrderHeader :scrolled="scrolled" />
-      <div class="cart_main" @scroll="(e: Event) => (scrolled = (e.target as HTMLElement).scrollTop > 0)">
+      <div
+        class="cart_main"
+        @scroll="(e: Event) => (scrolled = (e.target as HTMLElement).scrollTop > 0)"
+      >
         <DishesList v-if="!isEmpty()" />
         <EmptyScreen v-else />
       </div>
@@ -27,13 +30,13 @@ const { isEmpty } = useCartStore();
 
 <style scoped lang="scss">
 .cart {
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
 
   &_main {
-    height: calc(100vh - 22px - 127px);
+    height: calc(100dvh - 22px - 127px);
     overflow: scroll;
   }
 }

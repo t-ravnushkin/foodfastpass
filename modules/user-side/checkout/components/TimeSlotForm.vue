@@ -129,7 +129,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    max-height: calc(100vh - 143px - 364px);
+    max-height: calc(100dvh - 143px - 364px);
     width: 100%;
     gap: 7px;
 
