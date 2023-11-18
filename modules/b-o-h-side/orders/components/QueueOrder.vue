@@ -12,9 +12,6 @@ const props = defineProps<{
 
 const now = useNow();
 
-const refreshOrders = inject('refreshOrders');
-
-
 function isSoon(timeSlot: string) {
   const [ hour, minute ] = timeSlot.split(':').map(n => parseInt(n));
 
