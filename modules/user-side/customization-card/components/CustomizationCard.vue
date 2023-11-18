@@ -71,10 +71,18 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
               <div
                 class="ingredients__group_item"
                 v-for="item in group.items"
-                @click.stop="if (item.available || (!item.available && !item.removed)) item.removed = !item.removed;"
+                @click.stop="
+                  if (item.available || (!item.available && !item.removed))
+                    item.removed = !item.removed;
+                "
               >
                 <p
-                  :class="{ ingredients__group_item_disabled: !item.available && item.removed, ingredients__group_item_error: !item.available && !item.removed }"
+                  :class="{
+                    ingredients__group_item_disabled:
+                      !item.available && item.removed,
+                    ingredients__group_item_error:
+                      !item.available && !item.removed,
+                  }"
                 >
                   {{ item.name }}
                 </p>
@@ -108,7 +116,7 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
             >
               <p>Save</p>
             </div>
-            <div class="card__butons card__buttons_out" v-else>
+            <div class="card__buttons card__buttons_out" v-else>
               <p>Out of stock</p>
             </div>
           </div>

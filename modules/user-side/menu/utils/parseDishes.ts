@@ -3,6 +3,8 @@ import { Categories, Dish, FoodProperties, RawDish, CustomGroup, CustomItem } fr
 
 const currencyMap: { [s: string]: string } = {
   'eur': '€',
+  'usd': '$',
+  'gbp': '£',
 };
 
 export default function (rawDishes: RawDish[], restaurantName: string): Categories {
@@ -50,6 +52,22 @@ export default function (rawDishes: RawDish[], restaurantName: string): Categori
     };
 
     const custom: CustomGroup[] = [];
+    if (Object.keys(dish.customizableList).length > 0) {
+      for (const groupName of Object.keys(dish.customizableList)) {
+        const items: CustomItem[] = [];
+        for (const itemName of Object.keys(dish.customizableList[groupName])) {
+          items.push({
+            name: itemName,
+            available: dish.customizableList[groupName][itemName],
+            removed: true,
+          });
+        }
+        custom.push({
+          name: groupName,
+          items: items
+        });
+      }
+    }
     if (dish.customizableList.length > 0) {
       console.log(dish.customizableList);
       for (const group of dish.customizableList) {
@@ -59,7 +77,7 @@ export default function (rawDishes: RawDish[], restaurantName: string): Categori
           items.push({
             name: Object.keys(item)[0],
             available: !!Object.values(item)[0],
-            removed: !Object.values(item)[0],
+            removed: true,
           })
         }
         custom.push({

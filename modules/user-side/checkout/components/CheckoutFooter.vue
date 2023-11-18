@@ -56,10 +56,12 @@ const onConfirmation = ref(false);
   }
 
   width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
 
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  // position: fixed;
+  // bottom: 0;
+  // left: 0;
 
   box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.12);
 
@@ -109,7 +111,7 @@ const onConfirmation = ref(false);
 
     border: none;
     border-radius: 12px;
-    background: var(--dark-color);
+    background: #3636AB;
 
     font: 500 normal 1.8rem/1.5 Inter, sans-serif;
 

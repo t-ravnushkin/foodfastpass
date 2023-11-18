@@ -1,4 +1,6 @@
 <script setup lang="ts">
+await verifyCart();
+
 const stripeForm = ref();
 
 const currentTimeslot = ref({
@@ -57,11 +59,12 @@ watch(coupon, () => {
 const hasTimeslotError = ref(false);
 
 async function handlePostOrder() {
-  if (!verifyCart()) {
+  const isCartOk = await verifyCart();
+  if (!isCartOk) {
     hasOutOfStock.value = true;
     return;
   }
-  refreshNuxtData("timeSlotData");
+  await refreshNuxtData("timeSlotData");
   if (hasTimeslotError.value) {
     return;
   }
@@ -108,7 +111,7 @@ async function handlePostOrder() {
   console.log("Order submitted!");
   refreshCart();
 
-  refreshNuxtData("userOrderList");
+  await refreshNuxtData("userOrderList");
   navigateTo("/");
 }
 
@@ -117,50 +120,66 @@ const isTakeaway = ref(false);
 const isTimeslotExpanded = ref(false);
 
 const hasOutOfStock = ref(false);
+
+const timeslotform = ref(null);
 </script>
 
 <template>
   <client-only>
     <OutOfStockError v-model:open="hasOutOfStock" in-checkout />
-    <TimeSlotErrorModal v-model:open="hasTimeslotError" />
-    <CheckoutHeader :restaurantName="restaurantName" />
-    <div class="checkout">
-      <TakeAwayForm v-model="isTakeaway" />
-      <TimeSlotForm
-        style="margin-top: -16px"
-        :restaurantName="restaurantName"
-        v-model:timeSlot="currentTimeslot"
-        v-model:isExpanded="isTimeslotExpanded"
-        v-model:has-timeslot-error="hasTimeslotError"
-      />
-      <CheckoutCouponForm
-        v-show="!isTimeslotExpanded"
-        v-model:coupon="coupon"
-        :error="promocodeError"
-        :success="promocodeSuccess"
-        @check-promocode="checkPromocode"
-        :disabled="promocodeSuccess || promocodeError"
-      />
-      <CheckoutStripe v-if="!isTimeslotExpanded" ref="stripeForm" />
-    </div>
-    <CheckoutFooter
-      :total-price="priceSum()"
-      :discounted-price="discount ? discountedPriceSum() : ''"
-      :ready-for-checkout="isCheckoutReady()"
-      :processing="onProcessing"
-      @submit="handlePostOrder"
+    <TimeSlotErrorModal
+      v-model:open="hasTimeslotError"
+      @close="timeslotform.fixTimeSlot()"
     />
+    <div class="checkout">
+      <CheckoutHeader :restaurantName="restaurantName" />
+      <div class="checkout_main">
+        <TakeAwayForm style="margin-bottom: 10px" v-model="isTakeaway" />
+        <TimeSlotForm
+          :restaurantName="restaurantName"
+          v-model:timeSlot="currentTimeslot"
+          v-model:isExpanded="isTimeslotExpanded"
+          v-model:has-timeslot-error="hasTimeslotError"
+          ref="timeslotform"
+        />
+        <CheckoutCouponForm
+          v-show="!isTimeslotExpanded"
+          v-model:coupon="coupon"
+          :error="promocodeError"
+          :success="promocodeSuccess"
+          @check-promocode="checkPromocode"
+          :disabled="promocodeSuccess || promocodeError"
+        />
+        <CheckoutStripe v-show="!isTimeslotExpanded" ref="stripeForm" />
+      </div>
+      <CheckoutFooter
+        :total-price="priceSum()"
+        :discounted-price="discount ? discountedPriceSum() : ''"
+        :ready-for-checkout="isCheckoutReady() && !hasTimeslotError"
+        :processing="onProcessing"
+        @submit="handlePostOrder"
+      />
+    </div>
   </client-only>
 </template>
 
 <style scoped lang="scss">
 .checkout {
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 27px;
-  padding-left: 16.5px;
-  padding-right: 15.5px;
-  padding-top: 12px;
+
+  &_main {
+    height: calc(100vh - 84px - 135px);
+    flex-shrink: 0;
+    overflow: hidden;
+    width: 100%;
+    overflow: scroll;
+    padding-left: 16.5px;
+    padding-right: 15.5px;
+    padding-top: 12px;
+  }
 }
 </style>

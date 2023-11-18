@@ -8,7 +8,7 @@ export default function (restaurantName?: string) {
                 const restaurant = response.find(restaurant => restaurant.name === restaurantName);
                 mealTypes.value = Array.from(new Set(restaurant.allMenuTypes));
                 const { chosenMealType } = useFilters();
-                chosenMealType.value = restaurant.menuTypeNow;
+                chosenMealType.value = (response.mealTypeNow ?? mealTypes.value[0]);
             })
         })
     }

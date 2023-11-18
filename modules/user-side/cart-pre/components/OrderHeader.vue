@@ -19,10 +19,6 @@ const { isEmpty } = useCartStore();
   padding: 2.4rem;
   box-sizing: border-box;
 
-  position: fixed;
-  top: 0;
-  left: 0;
-
   background: white;
   z-index: 1000;
 

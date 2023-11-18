@@ -17,6 +17,7 @@
 <style scoped lang="scss">
 
 .footer {
+  justify-self: flex-end;
   margin: 0 2.4rem;
 
   padding: 3.2rem 0 4.8rem 0;

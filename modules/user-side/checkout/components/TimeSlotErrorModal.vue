@@ -2,10 +2,11 @@
 const props = defineProps<{
   open: boolean;
 }>();
-const emits = defineEmits(["update:open"]);
+const emits = defineEmits(["update:open", "close"]);
 
 function handleClose() {
   emits("update:open", false);
+  emits("close");
 }
 </script>
 

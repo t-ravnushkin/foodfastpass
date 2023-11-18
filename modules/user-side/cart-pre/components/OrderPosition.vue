@@ -46,6 +46,7 @@ const dish = cart.value[props.dishId].dish;
         <PlusIcon />
       </button>
     </div>
+    <p v-else class="dish__out">Out of stock</p>
   </li>
 </template>
 
@@ -62,6 +63,18 @@ const dish = cart.value[props.dishId].dish;
   gap: 0 1.2rem;
 
   margin-bottom: 24px;
+
+  &__out {
+    grid-area: buttons;
+    color: #f00;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%; /* 21px */
+    display: flex;
+    align-items: flex-end;
+  }
 
   &__image {
     width: 8.16rem;

@@ -4,7 +4,7 @@ import { Collapse } from "vue-collapsed";
 
 const { chosenMealType } = useFilters();
 
-defineProps({
+const props = defineProps({
   mealTypes: Array<string>,
 });
 
@@ -20,7 +20,7 @@ function toggleMealTypes() {
     <p class="meal__title">Today's menu</p>
 
     <div
-      v-if="mealTypes.length > 1"
+      v-if="mealTypes.length > 0"
       class="meal__dropdown"
       @click="toggleMealTypes"
       v-on-click-outside="
@@ -34,10 +34,15 @@ function toggleMealTypes() {
         <DropdownArrow
           class="meal__toggle-arrow"
           :class="{ 'meal__toggle-arrow_active': isExpanded }"
+          v-if="(mealTypes ?? []).length > 1"
         />
       </div>
 
-      <collapse :when="isExpanded" :style="{ transition: '0s' }">
+      <collapse
+        :when="isExpanded"
+        :style="{ transition: '0s' }"
+        v-if="(mealTypes ?? []).length > 1"
+      >
         <div class="meal__available-meals">
           <span
             v-for="possibleMeal in mealTypes"

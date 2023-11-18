@@ -47,30 +47,37 @@ async function payWithCard(clientSecret: string): Promise<any> {
 </script>
 
 <template>
-  <form id="payment-form" class="form">
-    <div ref="cardElement" id="card-element" class="form__card">
-      <!-- Stripe.js injects the card element here. -->
-    </div>
-  </form>
-  <p class="form__text">
-    All the payments are securely processed through Stripe.
-  </p>
-  <p class="form__text" style="margin-top: -25px">
-    We do&nbsp;<u>not</u> &nbsp;store your card details.
-  </p>
+  <div class="stripe">
+    <form id="payment-form" class="form">
+      <div ref="cardElement" id="card-element" class="form__card">
+        <!-- Stripe.js injects the card element here. -->
+      </div>
+    </form>
+    <p class="form__text">
+      All the payments are securely processed through Stripe.
+    </p>
+    <p class="form__text">
+      We do&nbsp;<u>not</u> &nbsp;store your card details.
+    </p>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.stripe {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .form {
   width: 100%;
-  margin-top: 41px;
   padding: 8px;
   box-shadow: 0px 1px 3px rgba(230, 235, 241, 0.25);
+  margin-bottom: 10px;
   color: #a9b7c4;
 
   &__text {
     width: 100%;
-    margin-top: -20px;
     padding-left: 8px;
     font-family: "Inter";
     font-style: normal;

@@ -199,28 +199,22 @@ async function submit() {
         <p class="registration__title">Password</p>
         <div style="width: 100%; flex-direction: row; align-items: center">
           <input
+            style="width: 100%"
             v-model="password"
             :type="passwordHidden ? 'password' : 'text'"
             placeholder="••••••••"
             class="registration__field"
-            :class="{
-              registration__field_invalid:
-                !isPasswordValid || havePasswordErrors,
-            }"
-            style="width: 100%"
           />
           <EyeIcon
-            height="4rem"
+            height="2.0rem"
             :is-closed="!passwordHidden"
             style="
               margin-left: -3.5rem;
               vertical-align: middle;
-              margin-top: -0.5%;
-              align-self: center;
+              align-self: stretch;
             "
             @click="passwordHidden = !passwordHidden"
           />
-          <!-- <ImageIcon style="margin-left: -2%;" @click="passwordHidden = !passwordHidden"/> -->
         </div>
         <p v-for="passwordError in passwordErrors" class="registration__error">
           {{ passwordError }}

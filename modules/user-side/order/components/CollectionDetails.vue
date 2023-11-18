@@ -13,7 +13,7 @@ defineProps<{
       <div class="collection__section-item">
         <p>Order placed</p>
         <!-- paymentDateTime in format of 11 August at 15:00 -->
-        <p>{{ new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeStyle: "short" }).format(paymentDateTime) }}</p>
+        <p>{{ new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeStyle: "short" }).format(paymentDateTime).split(",").splice(1).join(",") }}</p>
       </div>
       <div class="collection__section-item">
         <p>Collected</p>
@@ -23,7 +23,7 @@ defineProps<{
             { collection__status_pending: collectionStatus === 'pending' },
           ]"
         >
-          {{ collectionStatus ?? "Pending..." }}
+          {{ new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeStyle: "short" }).format(new Date(collectionStatus)).split(",").splice(1).join(",") ?? "Pending..." }}
         </p>
       </div>
     </div>

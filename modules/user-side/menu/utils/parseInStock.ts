@@ -9,6 +9,22 @@ export default function (rawDishes: RawDish[]): InStockInfo {
     let res: InStockInfo = {};
     for (const dish of rawDishes) {
         const custom: CustomGroup[] = [];
+        if (Object.keys(dish.customizableList).length > 0) {
+            for (const groupName of Object.keys(dish.customizableList)) {
+                const items: CustomItem[] = [];
+                for (const itemName of Object.keys(dish.customizableList[groupName])) {
+                    items.push({
+                        name: itemName,
+                        available: dish.customizableList[groupName][itemName],
+                        removed: true,
+                    });
+                }
+                custom.push({
+                    name: groupName,
+                    items: items
+                });
+            }
+        }
         if (dish.customizableList.length > 0) {
             console.log(dish.customizableList);
             for (const group of dish.customizableList) {
@@ -18,7 +34,7 @@ export default function (rawDishes: RawDish[]): InStockInfo {
                     items.push({
                         name: Object.keys(item)[0],
                         available: !!Object.values(item)[0],
-                        removed: !Object.values(item)[0],
+                        removed: true,
                     })
                 }
                 custom.push({

@@ -22,7 +22,8 @@ const customDish = useCustomDish();
     </p>
 
     <div class="dish__button" @click.stop="customDish = dish" v-if="dish.inStock && dish.custom">
-      <p>Customize</p>
+      <span>+</span>
+      <span>Add</span>
     </div>
     <DishAddButton
       :dish="dish"

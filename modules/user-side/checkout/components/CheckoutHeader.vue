@@ -19,7 +19,9 @@ const router = useRouter();
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 
+  width: 100%;
   height: 84px;
   padding: 24px;
   box-shadow: 0px 4px 6px -2px rgba(54, 54, 171, 0.03),

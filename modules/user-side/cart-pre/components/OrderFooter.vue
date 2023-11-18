@@ -3,6 +3,8 @@ const { priceSum, isEmpty, isCheckoutReady } = useCartStore();
 
 const hasErrors = ref(false);
 
+const { getRestaurantName } = useCartStore();
+
 async function handleCheckout() {
   const ready = await verifyCart();
   if (!ready) {
@@ -31,8 +33,11 @@ async function handleCheckout() {
     </button>
   </footer>
   <footer v-else class="footer">
-    <button class="footer__checkout-button" @click="navigateTo('/')">
-      Back to main page
+    <button
+      class="footer__checkout-button"
+      @click="navigateTo('/menu/' + getRestaurantName() + '/')"
+    >
+      Back to {{ getRestaurantName() }}
     </button>
   </footer>
 </template>
@@ -41,9 +46,7 @@ async function handleCheckout() {
 .footer {
   width: 100%;
 
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  margin-top: auto;
 
   box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.12);
 

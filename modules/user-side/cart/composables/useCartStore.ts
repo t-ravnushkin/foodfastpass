@@ -12,9 +12,31 @@ const cart = useSessionStorage<Cart>('cart', {});
 const customItems = useSessionStorage<Dish[]>('customItems', []);
 const discount = ref(0);
 
+const restName = useSessionStorage<string>('restName', '');
+
+const restaurantCarts = useSessionStorage<Map<string, Cart>>('restaurantCarts', new Map());
+const restaurantCustomItems = useSessionStorage<Map<string, Dish[]>>('restaurantCustomItems', new Map());
+const restaurantCurrentMealTypes = useSessionStorage<Map<string, string>>('restaurantCurrentMealTypes', new Map());
+
+function changeRestaurant(newRestaurant: string) {
+  if (restName.value) {
+    restaurantCarts.value.set(restName.value, cart.value);
+    restaurantCustomItems.value.set(restName.value, customItems.value);
+    restaurantCurrentMealTypes.value.set(restName.value, currentMealType.value);
+  }
+  restName.value = newRestaurant;
+  cart.value = restaurantCarts.value.get(newRestaurant) ?? {};
+  customItems.value = restaurantCustomItems.value.get(newRestaurant) ?? [];
+  currentMealType.value = restaurantCurrentMealTypes.value.get(newRestaurant) ?? "";
+}
+
+const currentMealType = useSessionStorage<string>('currentMealType', '');
+const suspendedDish = ref<Dish | null>(null);
+
 function clear() {
   cart.value = {};
   customItems.value = [];
+  currentMealType.value = "";
 }
 
 function toRawDeep<T>(observed: T): T {
@@ -36,6 +58,16 @@ function toRawDeep<T>(observed: T): T {
 }
 
 function add(dish: Dish) {
+  const { chosenMealType } = useFilters();
+  if (currentMealType.value === "")
+    currentMealType.value = chosenMealType.value;
+  if (dish.mealTypes.includes(currentMealType.value)) {
+    currentMealType.value = chosenMealType.value;
+  }
+  if (currentMealType.value !== chosenMealType.value) {
+    suspendedDish.value = dish;
+    return;
+  }
   if (dish.custom) {
     const clone = structuredClone(toRawDeep(dish));
     customItems.value.push(clone);
@@ -52,6 +84,10 @@ function remove(dish: Dish) {
     if (index > -1) {
       customItems.value.splice(index, 1);
     }
+    if (isEmpty()) {
+      console.log("clearing cart");
+      clear();
+    }
     return;
   }
   if (cart.value.hasOwnProperty(dish.id)
@@ -60,6 +96,10 @@ function remove(dish: Dish) {
 
   if (cart.value[dish.id].quantity === 0)
     delete cart.value[dish.id];
+  if (isEmpty()) {
+    console.log("clearing cart");
+    clear();
+  }
 }
 
 function refresh() {
@@ -99,6 +139,31 @@ function discountedPriceSum(): string {
     Number(Object.keys(cart.value)[0])
   ].dish.currency;
   return currency + String(Number(sum).toFixed(2));
+}
+
+function usedMenuTypes(): string[] {
+  let res: string[] = [];
+  if (customItems.value.length > 0)
+    res = customItems.value[0].mealTypes;
+  else if (Object.keys(cart.value).length > 0)
+    res = Object.values(cart.value)[0].dish?.mealTypes;
+  else
+    return [];
+  for (const item of customItems.value) {
+    let updatedRes: string[] = [];
+    for (const mealType of res)
+      if (item.mealTypes.includes(mealType))
+        updatedRes.push(mealType);
+    res = updatedRes;
+  }
+  for (const item of Object.values(cart.value)) {
+    let updatedRes: string[] = [];
+    for (const mealType of res)
+      if (item.dish?.mealTypes.includes(mealType))
+        updatedRes.push(mealType);
+    res = updatedRes;
+  }
+  return res;
 }
 
 function isCheckoutReady(): boolean {
@@ -147,7 +212,7 @@ function isCheckoutReady(): boolean {
 
   const areRestaurantsApproved = restaurantNames.size === 1;
 
-  const areMealTypesApproved = mealTypes.size <= 1;
+  const areMealTypesApproved = usedMenuTypes().length > 0;
 
   const isAmountApproved = dishesAmount > 0;
 
@@ -166,15 +231,20 @@ function isCheckoutReady(): boolean {
 }
 
 function getRestaurantName(): string {
-  if (customItems.value.length > 0)
-    return customItems.value[0].restaurantName;
-  if (Object.keys(cart.value).length > 0)
-    return Object.values(cart.value)[0].dish?.restaurantName;
-  return '';
+  return restName.value;
+  // if (customItems.value.length > 0)
+  //   return customItems.value[0].restaurantName;
+  // if (Object.keys(cart.value).length > 0)
+  //   return Object.values(cart.value)[0].dish?.restaurantName;
+  // return '';
 }
 
 function emptyDish(dishId: number) {
   delete cart.value[dishId];
+  if (isEmpty()) {
+    console.log("clearing cart");
+    clear();
+  }
 }
 
 function isEmpty(): boolean {
@@ -195,6 +265,10 @@ export default function () {
     clear,
     emptyDish,
     isEmpty,
-    getRestaurantName
+    getRestaurantName,
+    changeRestaurant,
+    currentMealType,
+    suspendedDish,
+    usedMenuTypes
   };
 }

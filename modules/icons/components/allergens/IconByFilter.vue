@@ -31,7 +31,7 @@ const filterToIcon = {
   Soya: Soy,
   Nuts: Nuts,
   Dairy: Dairy,
-  Peanuts: Peanuts,
+  Peanut: Peanuts,
   Vegetarian: Vegetarian,
   Vegan: Vegan,
   Celery: Celery,
@@ -41,7 +41,7 @@ const filterToIcon = {
   Molluscs: Molluscs,
   Sesame: Sesame,
   Fish: Fish,
-  Pescetarian: Pescetarian,
+  Pescatarian: Pescetarian,
 };
 </script>
 

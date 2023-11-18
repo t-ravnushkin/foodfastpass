@@ -25,6 +25,14 @@ const timeslots = await getTimeslots(props.restaurantName).then((data) => {
 });
 emits("update:timeSlot", { start: timeslots[0], end: timeslots[0] });
 
+function fixTimeSlot() {
+  emits("update:timeSlot", {
+    start: timeslots[0],
+    end: timeslots[0],
+  });
+}
+defineExpose({ fixTimeSlot });
+
 const hasError = computed(() => {
   return !timeslots.includes(props.timeSlot.start);
 });
@@ -42,7 +50,11 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
 <template>
   <div class="timeslots">
     <p class="timeslots__text">What time do you want to collect it?</p>
-    <div v-if="!isExpanded" class="timeslots__timeslot_active">
+    <div
+      v-if="!isExpanded"
+      class="timeslots__timeslot_active"
+      @click="toggleTimeSlots"
+    >
       {{ timeSlot.start }}
     </div>
     <p v-if="!isExpanded" class="timeslots__edit_text" @click="toggleTimeSlots">
@@ -132,8 +144,12 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
       line-height: 150%;
       border-radius: 8px;
 
+      &:last-child {
+        margin-bottom: 7px;
+      }
+
       &_selected {
-        background-color: var(--dark-color);
+        background-color: #3636ab;
         color: white;
       }
     }
@@ -146,7 +162,9 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
   align-items: left;
 
   width: 100%;
+  max-height: calc(100% - 166px);
   padding: 8px;
+  padding-bottom: 0;
 
   gap: 8px;
 
@@ -173,7 +191,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
-    background-color: var(--dark-color);
+    background-color: #3636ab;
     color: white;
     line-height: 150%;
   }

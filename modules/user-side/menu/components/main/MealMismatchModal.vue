@@ -1,23 +1,36 @@
 <script setup lang="ts">
-const open = ref(false);
-const { clear } = useCartStore();
+import { Dish } from "~/modules/user-side/menu/types";
 
-function emptyCart() {
+const { suspendedDish, clear, add, currentMealType } = useCartStore();
+const { chosenMealType } = useFilters();
+
+function handleConfirm() {
   clear();
-  open.value = false;
+  add(suspendedDish.value as Dish);
+  suspendedDish.value = null;
 }
 </script>
 
 <template>
-  <TrashCan @click="open = true" />
-  <Teleport to="body" v-if="open">
-    <div class="modal-background" @click="open = false">
+  <Teleport to="body" v-if="suspendedDish">
+    <div class="modal-background" @click="suspendedDish = null">
       <div class="modal" @click.stop>
-        <p class="modal__title">Empty cart?</p>
-        <button class="modal__button_cancel" @click="open = false">
+        <p class="modal__title">
+          You have some {{ currentMealType }} items in the basket. If you wish
+          to order {{ chosenMealType }}, you have to clear the basket.
+        </p>
+        <button
+          class="modal__button_cancel"
+          @click="
+            suspendedDish = null;
+            chosenMealType = currentMealType;
+          "
+        >
           Cancel
         </button>
-        <button class="modal__button_confirm" @click="emptyCart">Yes</button>
+        <button class="modal__button_confirm" @click="handleConfirm">
+          Clear basket
+        </button>
       </div>
     </div>
   </Teleport>
@@ -41,10 +54,11 @@ function emptyCart() {
   z-index: 10000;
   background-color: white;
   width: 291px;
-  height: 118px;
+  height: 165.5px;
+  flex-shrink: 0;
   border-radius: 18px;
 
-  padding: 13px 17px;
+  padding: 17.5px;
 
   display: grid;
   grid-template-areas: "title title" "confirm cancel";
@@ -52,12 +66,14 @@ function emptyCart() {
   column-gap: 16px;
 
   &__title {
+    width: 256px;
+    height: 64px;
     grid-area: title;
-    font-family: "Inter";
+    color: #000;
+    font-family: Inter;
+    font-size: 15px;
     font-style: normal;
     font-weight: 600;
-    font-size: 20px;
-    line-height: 150%;
   }
 
   &__button_cancel {

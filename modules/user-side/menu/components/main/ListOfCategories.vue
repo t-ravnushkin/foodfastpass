@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { Categories } from "~/modules/menu/types";
+import type { Categories, Dish } from "~/modules/menu/types";
 
 interface Props {
-  categories: Ref<Categories>;
-  isEmpty?: boolean;
+  categories: Categories;
+  allDishes: Dish[];
+  isEmpty: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const categoriesElements = {} as {
   [category: string]: ComponentPublicInstance;
@@ -19,12 +20,27 @@ const setScrollTop = inject("setScrollTop") as Function;
 onHandCategorySet((category) => {
   setScrollTop(categoriesElements[category].$el.offsetTop);
 });
+
+const hasDishes = ref(true);
+const { chosenMealType } = useFilters();
+watch([chosenMealType, props.allDishes], () => {
+  console.log("Watched");
+  for (const dish of props.allDishes) {
+    if (dish.mealTypes.includes(chosenMealType.value)) {
+      hasDishes.value = true;
+      return;
+    }
+  }
+  hasDishes.value = false;
+});
 </script>
 
 <template>
   <main class="menu-list">
+    <NotToday v-if="isEmpty" />
+    <EmptyMenuType v-else-if="!hasDishes" />
     <CategoryTable
-      v-if="!isEmpty"
+      v-else
       v-for="(dishes, categoryName) in categories"
       :key="categoryName"
       :ref="
@@ -36,7 +52,6 @@ onHandCategorySet((category) => {
       :dishes="dishes"
       class="menu-list__card"
     />
-    <NotToday v-else />
   </main>
 </template>
 

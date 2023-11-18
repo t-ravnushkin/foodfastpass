@@ -27,7 +27,7 @@ const emits = defineEmits<{
       <p
         v-if="coupon.length > 0 && !success"
         class="coupon__apply"
-        @click="$emit('check-promocode')"
+        @click="$emit('checkPromocode')"
       >
         Apply
       </p>
@@ -47,6 +47,9 @@ const emits = defineEmits<{
   width: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 0;
+  margin-top: 38px;
+  margin-bottom: 68px;
 
   &__container {
     width: 100%;

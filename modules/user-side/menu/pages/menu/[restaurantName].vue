@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { Restaurant } from "~/modules/user-side/restaurants/types";
+import { Dish } from "../../types";
 
 const restaurantName = useRoute().params.restaurantName as string;
 
 const categories = useCategories(restaurantName);
 
-const { cart, customItems } = useCartStore();
+const allDishes = useDishes(restaurantName);
+
+const { cart, customItems, changeRestaurant } = useCartStore();
+
+changeRestaurant(restaurantName);
 
 const { chosenMealType, onFiltersChange } = useFilters();
 
@@ -56,9 +61,13 @@ function onMenuScroll() {
 
 const currentDish = useCurrentDish();
 const customDish = useCustomDish();
+const isEmpty = computed(() => {
+  return mealTypes.value.length === 0;
+});
 </script>
 
 <template>
+  <MealMismatchModal />
   <article ref="menu" class="menu">
     <TheMenuHeader
       ref="header"
@@ -74,7 +83,8 @@ const customDish = useCustomDish();
     <MealType class="menu__meal" :meal-types="mealTypes" />
 
     <ListOfCategories
-      :is-empty="mealTypes.length === 0"
+      :is-empty="isEmpty"
+      :all-dishes="allDishes"
       :categories="categories"
       class="menu__categories"
     />
@@ -122,6 +132,7 @@ const customDish = useCustomDish();
 
   &__categories {
     margin: 0 1.6rem 9.6rem 1.5rem;
+    margin-bottom: auto;
   }
 }
 </style>

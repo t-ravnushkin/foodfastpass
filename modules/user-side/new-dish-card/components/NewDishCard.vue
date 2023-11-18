@@ -25,28 +25,28 @@ function close() {
 const swipeTarget = ref<HTMLElement | null>(null);
 const containerHeight = computed(() => swipeTarget.value?.offsetHeight ?? 0);
 const bottom = ref("0");
-const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
-  onSwipe(e: TouchEvent) {
-    if (containerHeight.value) {
-      if (lengthY.value < 0) {
-        bottom.value = `${lengthY.value}px`;
-      }
-    }
-  },
-  onSwipeEnd(e: TouchEvent) {
-    if (containerHeight.value) {
-      if (
-        lengthY.value >= 0 ||
-        Math.abs(lengthY.value) < containerHeight.value / 4
-      ) {
-        bottom.value = "0";
-      } else {
-        bottom.value = "0";
-        close();
-      }
-    }
-  },
-});
+// const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
+//   onSwipe(e: TouchEvent) {
+//     if (containerHeight.value) {
+//       if (lengthY.value < 0) {
+//         bottom.value = `${lengthY.value}px`;
+//       }
+//     }
+//   },
+//   onSwipeEnd(e: TouchEvent) {
+//     if (containerHeight.value) {
+//       if (
+//         lengthY.value >= 0 ||
+//         Math.abs(lengthY.value) < containerHeight.value / 4
+//       ) {
+//         bottom.value = "0";
+//       } else {
+//         bottom.value = "0";
+//         close();
+//       }
+//     }
+//   },
+// });
 </script>
 
 <template>

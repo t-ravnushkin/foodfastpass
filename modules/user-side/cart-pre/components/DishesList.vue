@@ -22,11 +22,7 @@ const customDish = useCustomDish();
 .dishes {
   width: 100%;
 
-  position: absolute;
-  top: 87px;
-
-  padding: 24px;
-  padding-top: 0;
+  padding: 0 24px;
 
   display: flex;
   flex-direction: column;

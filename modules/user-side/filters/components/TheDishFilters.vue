@@ -1,68 +1,57 @@
 <script setup lang="ts">
-
-import { vOnClickOutside } from '@vueuse/components';
-
+import { vOnClickOutside } from "@vueuse/components";
 
 defineProps<{
   isActive: boolean;
 }>();
 
 const emits = defineEmits<{
-  'update:isActive': [ value: boolean ];
+  "update:isActive": [value: boolean];
 }>();
 
-
-const {
-  diets,
-  allergens,
-  chosenDiets,
-  chosenAllergens,
-  chosenRating,
-  reset,
-} = useFilters();
+const { diets, allergens, chosenDiets, chosenAllergens, chosenRating, reset } =
+  useFilters();
 
 const verboseDiets = new Map([
-  [ 'Vegan', 'Vegan' ],
-  [ 'Vegetarian', 'Vegetarian' ],
-  [ 'Pescetarian', 'Pescetarian' ],
+  ["Vegan", "Vegan"],
+  ["Vegetarian", "Vegetarian"],
+  ["Pescetarian", "Pescetarian"],
 ]);
 
 const verboseAllergens = new Map([
-  [ 'Gluten/Wheat', 'Wheat free' ],
-  [ 'Shellfish', 'Shellfish free' ],
-  [ 'Eggs', 'Eggs free' ],
-  [ 'Soya', 'Soy free' ],
-  [ 'Nuts', 'Nuts free' ],
-  [ 'Dairy', 'Dairy free' ],
-  [ 'Peanuts', 'Peanuts free' ],
-  [ 'Celery', 'Celery free' ],
-  [ 'Mustard', 'Mustard free' ],
-  [ 'Lupin', 'Lupin free' ],
-  [ 'Sulphites', 'Sulphites free' ],
-  [ 'Molluscs', 'Molluscs free' ],
-  [ 'Fish', 'Fish free' ],
-  [ 'Sesame', 'Sesame free' ],
+  ["Gluten/Wheat", "Wheat free"],
+  ["Shellfish", "Shellfish free"],
+  ["Eggs", "Eggs free"],
+  ["Soya", "Soy free"],
+  ["Nuts", "Nuts free"],
+  ["Dairy", "Dairy free"],
+  ["Peanuts", "Peanuts free"],
+  ["Celery", "Celery free"],
+  ["Mustard", "Mustard free"],
+  ["Lupin", "Lupin free"],
+  ["Sulphites", "Sulphites free"],
+  ["Molluscs", "Molluscs free"],
+  ["Fish", "Fish free"],
+  ["Sesame", "Sesame free"],
 ]);
 
 const filters = ref();
 
-
 const isResettable = computed(() => {
-  return chosenDiets.length > 0
-    || chosenAllergens.length > 0
-    || chosenRating.value > 0;
+  return (
+    chosenDiets.length > 0 ||
+    chosenAllergens.length > 0 ||
+    chosenRating.value > 0
+  );
 });
 
-
 function hideFilters() {
-  emits('update:isActive', false);
+  emits("update:isActive", false);
 
   setTimeout(() => {
-    if (filters?.value?.scrollTop)
-      filters.value.scrollTop = 0;
+    if (filters?.value?.scrollTop) filters.value.scrollTop = 0;
   }, 500);
 }
-
 </script>
 
 <template>
@@ -70,9 +59,8 @@ function hideFilters() {
     ref="filters"
     v-on-click-outside="hideFilters"
     class="filters"
-    :class="{'filters_active': isActive}"
+    :class="{ filters_active: isActive }"
   >
-
     <FiltersHeader
       :is-resettable="isResettable"
       class="filters__header"
@@ -94,22 +82,14 @@ function hideFilters() {
       :toggled="chosenAllergens"
     />
 
-    <RatingFilter
-      v-model:rating-value="chosenRating"
-    />
+    <RatingFilter v-model:rating-value="chosenRating" />
 
-    <ApplyButton
-      class="filters__apply-button"
-      @click="hideFilters"
-    />
-
+    <ApplyButton class="filters__apply-button" @click="hideFilters" />
   </section>
 </template>
 
 <style scoped lang="scss">
-
 .filters {
-
   width: calc(100% - 2.4rem);
   height: calc(100dvh);
 
@@ -134,7 +114,7 @@ function hideFilters() {
 
   z-index: 2000;
 
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 
   &_active {
     right: 0;
@@ -144,5 +124,4 @@ function hideFilters() {
     margin-top: 6.4rem;
   }
 }
-
 </style>
