@@ -17,6 +17,17 @@ function add_product(i : Object){
         }
     }
 }
+function del_product(i : Object){
+    for(let j in meals.value){
+        const mt = meals.value[j]
+        for(let prod_index = 0; prod_index < products.value[mt][i.categories].length; prod_index++){
+            if(products.value[mt][i.categories][prod_index].id == i.id){
+                products.value[mt][i.categories].splice(prod_index, 1)
+                break
+            }
+        }
+    }
+}
 for(let i in _products){
     add_product(_products[i])
 }
@@ -39,6 +50,10 @@ socket.onclose = function(event) {
 socket.onmessage = function(event) {
   console.log("Получены данные " + event.data);
   const new_product = JSON.parse((event.data).toString())
+  del_product(new_product)
+  if(new_product.operation === "delete"){
+    return
+  }
   add_product(new_product)
 };
 
