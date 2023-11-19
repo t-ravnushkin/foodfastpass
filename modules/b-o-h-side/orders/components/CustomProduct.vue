@@ -30,6 +30,7 @@ function openModal(){
     <div class="card">
         <span>{{ product.name }}</span>
         <div>
+        <div>
             <button :disabled="loading" :class="['inventory-btn manage-stock active']"
             @click="openModal">
                 Manage stock
@@ -41,6 +42,7 @@ function openModal(){
             @click="outOfStock">
                 Out of Stock
             </button>
+        </div>
         </div>
     </div>
 </template>
@@ -69,13 +71,16 @@ function openModal(){
 }
 .inventory-btn.active{
     opacity: 100%;
-    border: solid 1px;
+    border: solid 1px #000000;
 }
 .card{
-    font-size: 15px;
+    font-size: 17px;
     font-family: 'Inter';
     color: #000000;
     border: none;
     word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 </style>

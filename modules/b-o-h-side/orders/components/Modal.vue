@@ -108,7 +108,7 @@ function inStock(category : string, name : string){
 }
 .inventory-btn.active{
     opacity: 100%;
-    border: solid 1px;
+    border: solid 1px #000000;
 }
 .modal {
     align-items: center;
