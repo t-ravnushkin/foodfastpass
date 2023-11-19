@@ -15,7 +15,7 @@ const showFilters = inject("showFilters") as Function;
 
 <template>
   <header class="header">
-    <BoldArrow @click="$router.go(-1)" />
+    <BoldArrow @click="$router.push('/')" />
 
     <h1 class="header__title">
       {{ restaurantName }}

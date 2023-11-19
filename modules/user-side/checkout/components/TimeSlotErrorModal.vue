@@ -58,7 +58,7 @@ function handleClose() {
     font-family: Inter;
     font-size: 15px;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 150%; /* 22.5px */
   }
 

@@ -39,7 +39,7 @@ async function submit() {
 
 <template>
   <article class="account">
-    <HeaderForAccount />
+    <HeaderForAccount isReset />
 
     <client-only>
       <main class="account__main">

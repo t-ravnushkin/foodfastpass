@@ -21,7 +21,11 @@ const customDish = useCustomDish();
       {{ dish.name }}
     </p>
 
-    <div class="dish__button" @click.stop="customDish = dish" v-if="dish.inStock && dish.custom">
+    <div
+      class="dish__button"
+      @click.stop="customDish = dish"
+      v-if="dish.inStock && dish.custom"
+    >
       <span>+</span>
       <span>Add</span>
     </div>
@@ -72,13 +76,16 @@ const customDish = useCustomDish();
 
   &__price {
     margin: 0;
-    color: var(--dark-color);
+    color: #4300b8;
     font: 600 normal 1.8rem/1.5 Inter, sans-serif;
   }
 
   &__button {
     width: 100%;
     height: 2.7rem;
+
+    margin-top: auto;
+    align-self: flex-end;
 
     display: flex;
     flex-flow: row nowrap;

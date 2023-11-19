@@ -16,6 +16,7 @@ function handleClose() {
     <div class="backdrop" @click="handleClose">
       <div class="modal" @click.stop>
         <p class="modal_text">
+        {{ inCheckout ? "Error!" : "" }}
           One or more items in your cart are out of stock. Please remove them
         </p>
         <button class="modal_button" @click="handleClose" v-if="!inCheckout">
@@ -35,7 +36,7 @@ function handleClose() {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   background: rgba(0, 0, 0, 0.5);
   z-index: 5001;
   display: flex;
@@ -45,7 +46,7 @@ function handleClose() {
 
 .modal {
   width: 291px;
-  height: 133px;
+  // height: 133px;
   border-radius: 18px;
   background: #fafafa;
   display: flex;
@@ -61,8 +62,9 @@ function handleClose() {
     font-family: Inter;
     font-size: 15px;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 150%; /* 22.5px */
+    margin-bottom: 18px;
   }
 
   &_button {

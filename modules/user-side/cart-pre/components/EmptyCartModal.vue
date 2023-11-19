@@ -29,7 +29,7 @@ function emptyCart() {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   z-index: 9999;
   background: rgba(0, 0, 0, 0.5);
 
@@ -55,7 +55,7 @@ function emptyCart() {
     grid-area: title;
     font-family: "Inter";
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 20px;
     line-height: 150%;
   }

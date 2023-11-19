@@ -51,9 +51,9 @@ const onConfirmation = ref(false);
 
 <style scoped lang="scss">
 .footer {
-  @media screen and (max-height: 700px) {
-    display: none;
-  }
+  // @media screen and (max-height: 700px) {
+  //   display: none;
+  // }
 
   width: 100%;
   margin-top: auto;
@@ -91,7 +91,7 @@ const onConfirmation = ref(false);
 
     justify-self: end;
 
-    color: var(--dark-color);
+    color: #4300b8;
     font: 500 normal 2rem/1.5 Inter, sans-serif;
   }
 
@@ -111,7 +111,7 @@ const onConfirmation = ref(false);
 
     border: none;
     border-radius: 12px;
-    background: #3636AB;
+    background: #4300b8;
 
     font: 500 normal 1.8rem/1.5 Inter, sans-serif;
 

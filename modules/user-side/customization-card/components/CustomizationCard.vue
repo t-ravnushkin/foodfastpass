@@ -298,7 +298,7 @@ const { direction, lengthX, lengthY } = useSwipe(swipeTarget, {
     }
 
     &_price {
-      color: var(--dark-color, #3636ab);
+      color: #4300b8;
       font-family: Inter;
       font-size: 18px;
       font-style: normal;

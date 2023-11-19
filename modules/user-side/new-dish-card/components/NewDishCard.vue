@@ -100,10 +100,7 @@ const bottom = ref("0");
                 @click.stop="add(dish)"
               >
                 <div class="card__buttons_add">
-                  <PlusIcon
-                    size="15"
-                    color="white"
-                  />
+                  <PlusIcon size="15" color="white" />
                   <p>Add</p>
                 </div>
               </div>
@@ -304,7 +301,7 @@ const bottom = ref("0");
       &_price {
         padding-top: 10px;
         padding-left: 10px;
-        color: var(--dark-color, #3636ab);
+        color: #4300b8;
         font-family: Inter;
         font-size: 18px;
         font-style: normal;

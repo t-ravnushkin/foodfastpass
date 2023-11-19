@@ -47,6 +47,7 @@ const emits = defineEmits<{
   width: 100%;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   z-index: 0;
   margin-top: 38px;
   margin-bottom: 68px;
@@ -60,6 +61,8 @@ const emits = defineEmits<{
   }
 
   &__input {
+    border-radius: 0;
+    box-shadow: none;
     border: none;
     border-bottom: 0.5px solid #aeaeae;
     padding: 5px;

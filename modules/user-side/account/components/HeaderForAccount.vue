@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineProps<{ isReset?: boolean }>();
 const authToken = useAuthToken();
 </script>
 
@@ -8,6 +9,11 @@ const authToken = useAuthToken();
       v-if="authToken.length > 0"
       class="header__return"
       @click="$router.push('/')"
+    />
+    <BoldArrow
+      v-else-if="isReset"
+      class="header__return"
+      @click="$router.push('/account/')"
     />
     <p v-else></p>
 

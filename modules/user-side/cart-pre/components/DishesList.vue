@@ -1,7 +1,20 @@
 <script setup lang="ts">
+import { Dish } from "../../menu/types";
+
 const { cart: dishes, customItems } = useCartStore();
 
 const customDish = useCustomDish();
+
+function handleClick(position: number) {
+  if (!customItems.value[position].custom) return;
+  for (const group in customItems.value[position].custom) {
+    for (const item in customItems.value[position].custom[group].items) {
+      if (!customItems.value[position].custom[group].items[item].available) {
+        customItems.value[position].custom[group].items[item].removed = true;
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -13,7 +26,10 @@ const customDish = useCustomDish();
       v-for="(item, position) in customItems"
       :key="position"
       :dish="item"
-      @customize="customDish = item"
+      @customize="
+        handleClick(position);
+        customDish = item;
+      "
     />
   </div>
 </template>

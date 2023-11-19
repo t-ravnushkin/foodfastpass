@@ -30,7 +30,7 @@ const outOfStockString = computed(() => {
       }}{{ (dish.priceValue * (1 - discount / 100)).toFixed(2) }}
     </p>
 
-    <p class="dish__errors" v-if="outOfStockString.length > 0">
+    <p class="dish__errors" v-if="outOfStockString.length > 0 && dish.inStock">
       {{ outOfStockString }}
     </p>
 
@@ -111,7 +111,7 @@ const outOfStockString = computed(() => {
   &__price {
     grid-area: price;
     margin: 0;
-    color: var(--dark-color);
+    color: #4300b8;
     font: 500 normal 1.4rem Inter, sans-serif;
   }
 }

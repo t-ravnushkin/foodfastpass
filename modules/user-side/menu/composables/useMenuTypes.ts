@@ -8,7 +8,8 @@ export default function (restaurantName?: string) {
                 const restaurant = response.find(restaurant => restaurant.name === restaurantName);
                 mealTypes.value = Array.from(new Set(restaurant.allMenuTypes));
                 const { chosenMealType } = useFilters();
-                chosenMealType.value = (response.mealTypeNow ?? mealTypes.value[0]);
+                const { currentMealType } = useCartStore();
+                chosenMealType.value = (currentMealType.value === "" ? (restaurant.mealTypeNow ?? mealTypes.value[0]) : currentMealType.value);
             })
         })
     }

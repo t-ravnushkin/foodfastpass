@@ -1,19 +1,15 @@
 <script setup lang="ts">
-
 const userInfo = await getUserInfo();
 
-
 function logOut() {
-  localStorage.setItem('foodfastpass_user_token', '');
+  localStorage.setItem("foodfastpass_user_token", "");
   window.location.reload();
 }
-
 </script>
 
 <template>
   <client-only>
     <section class="info">
-
       <div class="info__section">
         <p class="info__title">Full name</p>
         <p class="info__value">{{ userInfo?.username }}</p>
@@ -24,19 +20,16 @@ function logOut() {
         <p class="info__value">{{ userInfo?.email }}</p>
       </div>
 
-      <p class="info__title">*To change your email address, please contact customer support.</p>
+      <p class="info__title">
+        *To change your email address, please contact customer support.
+      </p>
 
-      <p
-        class="info__link"
-        @click="logOut"
-      >Log out</p>
-
+      <p class="info__link" @click="logOut">Log out</p>
     </section>
   </client-only>
 </template>
 
 <style scoped lang="scss">
-
 .info {
   padding: 0 2.4rem;
 
@@ -66,9 +59,8 @@ function logOut() {
   }
 
   &__link {
-    color: var(--primary-color);
+    color: #4300b8;
     font: 400 normal 1.4rem/1.5 Inter, sans-serif;
   }
 }
-
 </style>

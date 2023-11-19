@@ -11,7 +11,7 @@ const isActive = computed(() => {
 <template>
   <section :class="['order', { order_active: isActive }]">
     <button class="order__button" @click="navigateTo('/cart-pre')">
-      <span>View basket</span>
+      <span>View Basket</span>
 
       <span class="order__price">{{ priceSum() }}</span>
     </button>

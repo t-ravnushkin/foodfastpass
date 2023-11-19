@@ -76,7 +76,7 @@ async function handleCheckout() {
 
     justify-self: end;
 
-    color: var(--dark-color);
+    color: #4300b8;
     font: 500 normal 2rem/1.5 Inter, sans-serif;
   }
 
@@ -96,7 +96,7 @@ async function handleCheckout() {
 
     border: none;
     border-radius: 12px;
-    background: var(--dark-color);
+    background: #4300b8;
 
     font: 500 normal 1.8rem/1.5 Inter, sans-serif;
 

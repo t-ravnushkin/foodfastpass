@@ -34,14 +34,14 @@ function toggleMealTypes() {
         <DropdownArrow
           class="meal__toggle-arrow"
           :class="{ 'meal__toggle-arrow_active': isExpanded }"
-          v-if="(mealTypes ?? []).length > 1"
+          v-if="(mealTypes ?? []).length > 0"
         />
       </div>
 
       <collapse
         :when="isExpanded"
         :style="{ transition: '0s' }"
-        v-if="(mealTypes ?? []).length > 1"
+        v-if="(mealTypes ?? []).length > 0"
       >
         <div class="meal__available-meals">
           <span
@@ -114,7 +114,11 @@ function toggleMealTypes() {
 
   &__meal-type {
     color: var(--black-color);
-    font: 400 normal 1.6rem/1.5 Inter, sans-serif;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 27px */
 
     &_active {
       color: var(--dark-color);

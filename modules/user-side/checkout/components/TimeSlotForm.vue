@@ -97,6 +97,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
   flex-direction: column;
   width: 100%;
   gap: 26px;
+  flex-shrink: 0;
 
   &__hours {
     display: flex;
@@ -143,13 +144,14 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
       font-size: 14px;
       line-height: 150%;
       border-radius: 8px;
+      flex-shrink: 0;
 
       &:last-child {
         margin-bottom: 7px;
       }
 
       &_selected {
-        background-color: #3636ab;
+        background-color: #4300b8;
         color: white;
       }
     }
@@ -181,6 +183,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
   }
 
   &__timeslot_active {
+      flex-shrink: 0;
     border-radius: 8px;
     display: flex;
     justify-content: center;
@@ -191,7 +194,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
-    background-color: #3636ab;
+    background-color: #4300b8;
     color: white;
     line-height: 150%;
   }
@@ -203,7 +206,7 @@ const selectedHour = ref(timeslots[0].split(":")[0]);
     font-weight: 400;
     font-size: 16px;
     line-height: 19px;
-    color: #3636ab;
+    color: #4300b8;
   }
 }
 </style>

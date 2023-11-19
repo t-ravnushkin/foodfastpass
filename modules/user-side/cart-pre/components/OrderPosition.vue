@@ -105,7 +105,7 @@ const dish = cart.value[props.dishId].dish;
   &__price {
     grid-area: price;
     margin: 0;
-    color: var(--dark-color);
+    color: #4300b8;
     font: 500 normal 1.4rem Inter, sans-serif;
   }
 }
