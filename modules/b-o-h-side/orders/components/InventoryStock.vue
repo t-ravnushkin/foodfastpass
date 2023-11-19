@@ -20,10 +20,12 @@ function add_product(i : Object){
 function del_product(i : Object){
     for(let j in meals.value){
         const mt = meals.value[j]
-        for(let prod_index = 0; prod_index < products.value[mt][i.categories].length; prod_index++){
-            if(products.value[mt][i.categories][prod_index].id == i.id){
-                products.value[mt][i.categories].splice(prod_index, 1)
-                break
+        for(let cur_category in products.value[mt]){
+            for(let prod_index = 0; prod_index < products.value[mt][cur_category].length; prod_index++){
+                if(products.value[mt][cur_category][prod_index].id == i.id){
+                    products.value[mt][cur_category].splice(prod_index, 1)
+                    break
+                }
             }
         }
     }
@@ -153,6 +155,7 @@ function cmpMeal(a : string, b : string){
 .products-wrapper{
     gap: 1em;
     display: grid;
+    grid-auto-rows: 1fr;
     width: 100%;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     padding-left: 2.4rem;

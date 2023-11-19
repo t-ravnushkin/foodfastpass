@@ -27,7 +27,8 @@ function inStock(){
 
 <template>
     <div class="card">
-        <span>{{ product.name }}</span>
+        <span class="product-name">{{ product.name }}</span>
+        <div>
         <div>
             <button :disabled="loading" :class="['inventory-btn in-stock', {'active' : product.inStock}]"
             @click="inStock">
@@ -40,10 +41,14 @@ function inStock(){
                 Out of Stock
             </button>
         </div>
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+.product-name{
+
+}
 .inventory-btn{
     opacity: 0.5;
     width: 100%;
@@ -67,13 +72,16 @@ function inStock(){
 }
 .inventory-btn.active{
     opacity: 100%;
-    border: solid 1px;
+    border: solid 1px #000000;
 }
 .card{
-    font-size: 15px;
+    font-size: 17px;
     font-family: 'Inter';
     color: #000000;
     border: none;
     word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 </style>
