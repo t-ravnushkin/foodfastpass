@@ -20,7 +20,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install
-        run: npm install
+        run: |
+          npm install
+          npm install stripe
 
       - name: Build
         run: BASE_URL="https://backhelp.foodfastpass.ie" NUXT_PUBLISHABLE_KEY="${{ secrets.STRIPE_KEY }}" npx nuxi build
