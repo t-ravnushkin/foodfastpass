@@ -19,8 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install
+        run: npm install
+
       - name: Build
-        run: BASE_URL="https://backhelp.foodfastpass.ie" NUXT_PUBLISHABLE_KEY="${{ secrets.STRIPE_KEY }}" nuxt build
+        run: BASE_URL="https://backhelp.foodfastpass.ie" NUXT_PUBLISHABLE_KEY="${{ secrets.STRIPE_KEY }}" nuxi build
 
       - name: Copy files
         uses: appleboy/scp-action@master
