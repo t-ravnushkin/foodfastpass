@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
-import { Dish } from '~/modules/dish-card/types';
-
+import { Dish } from "../../../dish-card/types";
 
 interface Props {
   dish: Dish;
@@ -9,45 +7,40 @@ interface Props {
 
 defineProps<Props>();
 
-
 const filterToVerboseMap = new Map([
-  [ 'Gluten/Wheat', 'Contains wheat / gluten' ],
-  [ 'Shellfish', 'Contains shellfish' ],
-  [ 'Eggs', 'Contains eggs' ],
-  [ 'Soya', 'Contains soy' ],
-  [ 'Nuts', 'Contains nuts' ],
-  [ 'Dairy', 'Contains dairy products' ],
-  [ 'Peanut', 'Contains peanuts' ],
-  [ 'Vegetarian', 'Vegetarian' ],
-  [ 'Vegan', 'Vegan' ],
+  ["Gluten/Wheat", "Contains wheat"],
+  ["Shellfish", "Contains shellfish"],
+  ["Eggs", "Contains eggs"],
+  ["Soya", "Contains soy"],
+  ["Nuts", "Contains nuts"],
+  ["Dairy", "Contains dairy"],
+  ["Peanuts", "Contains peanuts"],
+  ["Celery", "Contains celery"],
+  ["Mustard", "Contains mustard"],
+  ["Lupin", "Contains lupin"],
+  ["Sulphites", "Contains sulphites"],
+  ["Molluscs", "Contains molluscs"],
+  ["Fish", "Contains fish"],
+  ["Sesame", "Contains sesame"],
+  ["Vegetarian", "Vegetarian"],
+  ["Vegan", "Vegan"],
+  ["Pescetarian", "Pescetarian"],
 ]);
-
 </script>
 
 <template>
   <div class="allergens-list">
-
-    <template
-      v-for="filter in dish.filters"
-      :key="filter"
-    >
-
-      <IconByFilter
-        :filter="filter"
-        class="allergens-list__icon"
-      />
+    <template v-for="filter in dish.filters" :key="filter">
+      <IconByFilter :filter="filter" class="allergens-list__icon" />
 
       <p class="allergens-list__description">
-        {{ filterToVerboseMap.get(filter) ?? '' }}
+        {{ filterToVerboseMap.get(filter) ?? "" }}
       </p>
-
     </template>
-
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .allergens-list {
   display: grid;
   grid: repeat(auto-fit, 3.6rem) / 3.6rem auto;
@@ -66,5 +59,4 @@ const filterToVerboseMap = new Map([
     text-align: start;
   }
 }
-
 </style>

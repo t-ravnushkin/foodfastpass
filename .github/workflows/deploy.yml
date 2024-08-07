@@ -1,0 +1,49 @@
+# build nuxt
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - bugfixes
+  pull_request:
+    branches:
+      - main
+      - bugfixes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: npm install
+            
+      - name: Install stripe
+        run: npm install @stripe/stripe-js
+
+      - name: Build
+        run: BASE_URL="https://backhelp.foodfastpass.ie" NUXT_PUBLISHABLE_KEY="${{ secrets.STRIPE_KEY }}" npx nuxi build
+
+      - name: Copy files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: ".output"
+          overwrite: true
+          target: "/var/www/html/foodfastpass/.output"
+
+      - name: Restart service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /var/www/html/foodfastpass
+            pm2 restart all

@@ -40,16 +40,20 @@ export default defineNuxtConfig({
     '~/modules/user-side/restaurants',
     '~/modules/user-side/sidebar',
     '~/modules/user-side/waitlist',
+    '~/modules/user-side/cart-pre',
+    '~/modules/user-side/checkout',
+    '~/modules/user-side/new-dish-card',
+    '~/modules/user-side/customization-card',
 
     '~/modules/b-o-h-side/auth',
     '~/modules/b-o-h-side/orders',
   ],
-  nitro: {
-    prerender: {
-      routes: [ '/' ],
-      ignore: [ '/menu', '/confirm' ],
-    },
-  },
+  // nitro: {
+  //   prerender: {
+  //     routes: [ '/' ],
+  //     ignore: [ '/menu', '/confirm' ],
+  //   },
+  // },
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
@@ -77,7 +81,7 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: '/',
-      globPatterns: [ '**/*.{js,css,html,png,svg,ico}' ],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
     client: {
       installPrompt: true,
@@ -85,7 +89,7 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true,
       suppressWarnings: true,
-      navigateFallbackAllowlist: [ /^\/$/ ],
+      navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
     },
   },

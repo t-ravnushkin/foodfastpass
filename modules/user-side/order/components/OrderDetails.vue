@@ -1,42 +1,41 @@
 <script setup lang="ts">
-
-import { Dish } from '~/modules/user-side/menu/types';
-
+import { Dish } from "~/modules/user-side/menu/types";
 
 defineProps<{
   cart: Dish[];
-  quantities: {[i: number]: number};
+  quantities: { [i: number]: number };
+  discount: number;
 }>();
 
-
-const currencyMap = {
-  'eur': '€',
-  '€': '€',
+type CurrencyMapType = {
+  [key: string]: string;
+};
+const currencyMap: CurrencyMapType = {
+  eur: "€",
+  "€": "€",
 };
 
-
-const coupon = ref('NEWCUSTOMER');
-
-
+const coupon = ref("NEWCUSTOMER");
 </script>
 
 <template>
   <section class="details">
-
     <p class="details__heading">Your order</p>
 
     <div class="details__container">
-
       <section class="details__dishes">
-        <template
-          v-for="product in cart"
-          :key="product.id"
-        >
+        <template v-for="product in cart" :key="product.id">
           <p>{{ quantities[product.id] }}x</p>
           <p>{{ product.name }}</p>
           <p class="details__price">
-            {{ currencyMap[product.currency]
-            + (product.price * quantities[product.id]).toFixed(2) }}
+            {{
+              currencyMap[product.currency] +
+              (
+                product.price *
+                quantities[product.id] *
+                (1 - discount / 100)
+              ).toFixed(2)
+            }}
           </p>
         </template>
       </section>
@@ -56,27 +55,34 @@ const coupon = ref('NEWCUSTOMER');
       <section class="details__summary-section">
         <div class="details__section-item">
           <p>Total</p>
-          <p class="details__price">{{
-            cart?.length > 0 ?
-              currencyMap[cart[0].currency]
-              + cart
-                .reduce((accumulator, currentValue) => accumulator + Number(currentValue.price), 0)
-                .toFixed(2) :
-              '0.00'
-          }}</p>
+          <p class="details__price">
+            {{
+              cart?.length > 0
+                ? currencyMap[cart[0].currency] +
+                  (
+                    cart.reduce(
+                      (accumulator, currentValue) =>
+                        accumulator +
+                        Number(
+                          currentValue.price * quantities[currentValue.id]
+                        ),
+                      0
+                    ) *
+                    (1 - discount / 100)
+                  ).toFixed(2)
+                : "0.00"
+            }}
+          </p>
         </div>
         <div class="details__section-item">
           <p>Paid with ApplePay *1234</p>
         </div>
       </section>
-
     </div>
-
   </section>
 </template>
 
 <style scoped lang="scss">
-
 .details {
   margin: 0 0.8rem;
 
@@ -95,8 +101,8 @@ const coupon = ref('NEWCUSTOMER');
 
     border-radius: 0.8rem;
     background: var(--white-color);
-    box-shadow: 0 4px 8px -2px rgba(54, 54, 171, 0.10),
-    0 2px 4px -2px rgba(54, 54, 171, 0.06);
+    box-shadow: 0 4px 8px -2px rgba(54, 54, 171, 0.1),
+      0 2px 4px -2px rgba(54, 54, 171, 0.06);
 
     color: var(--black-color);
     font: 400 normal 1.6rem/1.5 Inter, sans-serif;
@@ -138,7 +144,5 @@ const coupon = ref('NEWCUSTOMER');
     font: 500 normal 1.2rem/2.4rem Inter, sans-serif;
     text-transform: capitalize;
   }
-
 }
-
 </style>

@@ -1,34 +1,26 @@
 <script setup lang="ts">
-
-import { Order } from '~/modules/user-side/order/types';
-import { Restaurant } from '~/modules/user-side/restaurants/types';
-
+import { Order } from "~/modules/user-side/order/types";
+import { Restaurant } from "~/modules/user-side/restaurants/types";
 
 defineProps<{
   order: Order;
 }>();
 
-
 const currencyMap = {
-  'eur': '€',
-  '€': '€',
+  eur: "€",
+  "€": "€",
 };
-
 
 const restaurants = await getRestaurants();
 
-
 function restaurantById(restaurantId: number): Restaurant | undefined {
   for (const restaurant of restaurants)
-    if (restaurant.id === restaurantId)
-      return restaurant;
+    if (restaurant.id === restaurantId) return restaurant;
 }
-
 </script>
 
 <template>
   <section class="order">
-
     <ImgDefault
       :src="restaurantById(Number(order.rest))?.photo"
       :alt="restaurantById(Number(order.rest))?.name"
@@ -41,37 +33,43 @@ function restaurantById(restaurantId: number): Restaurant | undefined {
 
     <p class="order__sub-info">
       {{
-        order.products?.length > 0 ?
-          currencyMap[order.products[0].currency]
-          + order.products
-            .reduce((accumulator, currentValue) => accumulator + Number(currentValue.price), 0)
-            .toFixed(2) :
-          '0.00'
-      }} • {{ order?.timestamp ? 'Collected ' + order.timestamp : 'pending' }}
+        order.products?.length > 0
+          ? currencyMap[order.products[0].currency] +
+            (
+              order.products.reduce(
+                (accumulator, currentValue) =>
+                  accumulator +
+                  Number(currentValue.price * order.quantity[currentValue.id]),
+                0
+              ) *
+              (1 - order.discount / 100)
+            ).toFixed(2)
+          : "0.00"
+      }}
+      •
+      {{ order?.state === "Confirm" ? "Collected" : order?.state }}
     </p>
-
   </section>
 </template>
 
 <style scoped lang="scss">
-
 .order {
   margin: 0 2.4rem;
   padding: 0.8rem;
 
   display: grid;
-  grid: "image main" auto
-        "image sub" auto
-        / 5.4rem auto max-content;
+  grid:
+    "image main" auto
+    "image sub" auto
+    / 5.4rem auto max-content;
   gap: 0 1.2rem;
   place-items: center start;
 
   background: var(--white-color);
   /* shadow md */
-  box-shadow: 0 4px 8px -2px rgba(54, 54, 171, 0.10),
-  0 2px 4px -2px rgba(54, 54, 171, 0.06);
+  box-shadow: 0 4px 8px -2px rgba(54, 54, 171, 0.1),
+    0 2px 4px -2px rgba(54, 54, 171, 0.06);
   border-radius: 0.8rem;
-
 
   &__image {
     grid-area: image;
@@ -93,5 +91,4 @@ function restaurantById(restaurantId: number): Restaurant | undefined {
     font: 400 normal 1.3rem/1.5 Inter, sans-serif;
   }
 }
-
 </style>

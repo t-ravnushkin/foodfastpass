@@ -14,14 +14,14 @@ export default function <T>(
     // cache request
     key: url,
 
-    onResponse(_ctx) {
-      // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
-    },
+    // onResponse(_ctx) {
+    //   // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
+    // },
 
-    onResponseError(_ctx) {
-      // throw new myBusinessError()
-      console.error(_ctx);
-    },
+    // onResponseError(_ctx) {
+    //   // throw new myBusinessError()
+    //   console.error(_ctx);
+    // },
   };
 
   const params = defu(options, defaults);

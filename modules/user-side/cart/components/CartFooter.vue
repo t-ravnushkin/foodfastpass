@@ -1,34 +1,55 @@
 <script setup lang="ts">
-
 const props = defineProps<{
   totalPrice: string;
   readyForCheckout: boolean;
+  discountedPrice: string;
+  processing: boolean;
 }>();
 
 const emits = defineEmits<{
   submit: [];
 }>();
 
-
+const onConfirmation = ref(false);
 </script>
 
 <template>
   <footer class="footer">
-
     <p class="footer__total">Total</p>
 
-    <p class="footer__price">{{ totalPrice }}</p>
+    <p v-if="!discountedPrice" class="footer__price">{{ totalPrice }}</p>
+    <p v-else class="footer__price">
+      <s>{{ totalPrice }}</s> {{ discountedPrice }}
+    </p>
 
     <button
-      :class="['footer__checkout-button', {'footer__checkout-button_disabled': !readyForCheckout}]"
-      @click="readyForCheckout ? emits('submit') : ''"
-    >Checkout</button>
-
+      v-if="(!onConfirmation || !readyForCheckout) && !processing"
+      :class="[
+        'footer__checkout-button',
+        { 'footer__checkout-button_disabled': !readyForCheckout },
+      ]"
+      @click="readyForCheckout ? (onConfirmation = true) : ''"
+    >
+      Checkout
+    </button>
+    <button
+      v-else-if="processing"
+      class="footer__checkout-button footer__checkout-button_disabled"
+    >
+      Processing...
+    </button>
+    <Confirmation
+      v-else
+      @confirm="
+        onConfirmation = false;
+        emits('submit');
+      "
+      @cancel="onConfirmation = false"
+    />
   </footer>
 </template>
 
 <style scoped lang="scss">
-
 .footer {
   width: 100vw;
   padding: 2.4rem;
@@ -38,9 +59,10 @@ const emits = defineEmits<{
   left: 0;
 
   display: grid;
-  grid: "total price" auto
-        "button button" auto
-        / auto auto;
+  grid:
+    "total price" auto
+    "button button" auto
+    / auto auto;
   gap: 3.2rem 0;
   place-content: space-between;
 
@@ -83,12 +105,11 @@ const emits = defineEmits<{
 
     font: 500 normal 1.8rem/1.5 Inter, sans-serif;
 
-    transition: all ease .2s;
+    transition: all ease 0.2s;
 
     &_disabled {
       background: var(--medium-color);
     }
   }
 }
-
 </style>

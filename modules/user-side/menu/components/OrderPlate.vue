@@ -1,36 +1,24 @@
 <script setup lang="ts">
-
-const { priceSum } = useCartStore();
+const { priceSum, customItems } = useCartStore();
 
 const isActive = computed(() => {
-  const matches = priceSum().match(/\d+\.?\d*/g) ?? ['0'];
+  const matches = priceSum().match(/\d+\.?\d*/g) ?? ["0"];
   const num = parseFloat(matches[0]);
   return num !== 0;
 });
-
 </script>
 
 <template>
-  <section :class="['order', {'order_active': isActive}]">
+  <section :class="['order', { order_active: isActive }]">
+    <button class="order__button" @click="navigateTo('/cart-pre')">
+      <span>View Basket</span>
 
-    <button
-      class="order__button"
-      @click="navigateTo('/cart')"
-    >
-
-      <span>View order</span>
-
-      <span
-        class="order__price"
-      >{{ priceSum() }}</span>
-
+      <span class="order__price">{{ priceSum() }}</span>
     </button>
-
   </section>
 </template>
 
 <style scoped lang="scss">
-
 .order {
   width: 100%;
 
@@ -43,7 +31,7 @@ const isActive = computed(() => {
 
   translate: 0 100%;
 
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 
   &_active {
     translate: 0 0;
@@ -71,7 +59,5 @@ const isActive = computed(() => {
     background: var(--primary-color);
     border-radius: 50em;
   }
-
 }
-
 </style>

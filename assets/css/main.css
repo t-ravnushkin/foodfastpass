@@ -1,49 +1,48 @@
 /* fonts */
-@import url('./Inter.css');
-@import url('./HelveticaNeue.css');
-@import url('./CerebriSansPro.css');
-
+@import url("./Inter.css");
+@import url("./HelveticaNeue.css");
+@import url("./CerebriSansPro.css");
 
 :root {
-    /*--primary-color: #6432F4;*/
-    /*--secondary-color: #A96DDD;*/
-    /*--accent-color: #2D0F44;*/
+  /*--primary-color: #6432F4;*/
+  /*--secondary-color: #A96DDD;*/
+  /*--accent-color: #2D0F44;*/
 
-    /*--background-light: #EDEAEB;*/
-    /*--background-medium: #F4F4F4;*/
-    /*--background-dark: #D9D9D9;*/
+  /*--background-light: #EDEAEB;*/
+  /*--background-medium: #F4F4F4;*/
+  /*--background-dark: #D9D9D9;*/
 
     --dark-color: oklch(37.6% 0.241 284.3334);
     --primary-color: oklch(52.86% 0.2976 286.1924);
     --medium-color: oklch(76.87% 0.1327 282.8281);
     --light-color: oklch(89.13% 0.061 286.39);
 
-    --white-color: oklch(100% 0 0);
-    --light-gray-color: oklch(88.53% 0 0);
-    --dark-gray-color: oklch(65.34% 0 0);
-    --darker-gray-color: oklch(36.91% 0 0);
-    --black-color: oklch(0% 0 0);
+  --white-color: oklch(100% 0 0);
+  --light-gray-color: oklch(88.53% 0 0);
+  --dark-gray-color: oklch(65.34% 0 0);
+  --darker-gray-color: oklch(36.91% 0 0);
+  --black-color: oklch(0% 0 0);
 
-    --red-color: oklch(55.62% 0.251 16.49);
-    --yellow-color: oklch(86.61% 0.2059 95.7524);
-    --green-color: oklch(61.21% 0.327 151.11);
+  --red-color: oklch(55.62% 0.251 16.49);
+  --yellow-color: oklch(86.61% 0.2059 95.7524);
+  --green-color: #349f4c;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
-    font-size: 62.5%;  /* 1rem = 10px */
+  font-size: 62.5%; /* 1rem = 10px */
 }
 
 body {
-    margin: 0;
+  margin: 0;
 
-    overflow: overlay;
+  overflow: overlay;
 
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

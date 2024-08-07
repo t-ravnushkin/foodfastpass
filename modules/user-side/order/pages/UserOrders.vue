@@ -1,38 +1,30 @@
 <script setup lang="ts">
-
-import OrderPreview from '~/modules/user-side/order/components/OrderPreview.vue';
-
+import OrderPreview from "~/modules/user-side/order/components/OrderPreview.vue";
 
 const orders = await getOrders();
-
-
 </script>
 
 <template>
   <article class="orders">
-
-    <OrdersHeader/>
+    <OrdersHeader />
 
     <main class="orders__main">
-
       <p class="orders__title">Recent orders</p>
 
       <OrderPreview
-        v-for="order in orders.sort((a, b) => Math.random() > 0.5 ? 1 : -1)"
+        v-for="order in orders?.sort((a, b) =>
+          new Date(a.timepayment) < new Date(b.timepayment) ? 1 : -1
+        )"
         :key="order.id"
         :order="order"
         @click="$router.push(`/order/${order.id}`)"
       />
-
     </main>
-
   </article>
 </template>
 
 <style scoped lang="scss">
-
 .orders {
-
   &__main {
     margin-top: 10.8rem;
 

@@ -1,56 +1,43 @@
 <script setup lang="ts">
-
 defineProps<{
   restaurantName: string;
   isSideBarActive: boolean;
 }>();
 
 const emits = defineEmits<{
-  'update:isSideBarActive': [ value: boolean ];
+  "update:isSideBarActive": [value: boolean];
 }>();
-
 
 const { filtersAmount } = useFilters();
 
-const showFilters = inject('showFilters') as Function;
-
+const showFilters = inject("showFilters") as Function;
 </script>
 
 <template>
   <header class="header">
-
-    <BoldArrow
-      @click="$router.go(-1)"
-    />
+    <BoldArrow @click="$router.push('/')" />
 
     <h1 class="header__title">
       {{ restaurantName }}
     </h1>
 
     <div class="header__filter-icon-container">
-
       <FiltersIcon
         class="header__filter"
         :color="filtersAmount > 0 ? 'var(--dark-color)' : 'var(--black-color)'"
         @click="showFilters"
       />
 
-      <div
-        v-if="filtersAmount > 0"
-        class="header__filters-count"
-      >
-        <span>{{filtersAmount}}</span>
+      <div v-if="filtersAmount > 0" class="header__filters-count">
+        <span>{{ filtersAmount }}</span>
       </div>
-
     </div>
 
-    <CategoriesSlider class="header__slider"/>
-
+    <CategoriesSlider class="header__slider" />
   </header>
 </template>
 
 <style scoped lang="scss">
-
 .header {
   width: 100%;
 
@@ -61,7 +48,8 @@ const showFilters = inject('showFilters') as Function;
   top: 0;
 
   display: grid;
-  grid: "return title filter"
+  grid:
+    "return title filter"
     "slider slider slider" / 2rem auto 2rem;
   align-items: center;
   gap: 1.6rem;
@@ -71,7 +59,7 @@ const showFilters = inject('showFilters') as Function;
 
   /* shadow lg */
   box-shadow: 0 12px 16px -4px rgba(54, 54, 171, 0.08),
-  0 4px 6px -2px rgba(54, 54, 171, 0.03);
+    0 4px 6px -2px rgba(54, 54, 171, 0.03);
 
   z-index: 2000;
   user-select: none;
@@ -118,5 +106,4 @@ const showFilters = inject('showFilters') as Function;
     place-self: center start;
   }
 }
-
 </style>

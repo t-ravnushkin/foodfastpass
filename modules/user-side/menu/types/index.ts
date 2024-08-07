@@ -14,6 +14,8 @@ interface Dish {
   description?: string;
   foodProperties?: FoodProperties;
   restaurantName: string;
+  inStock: boolean;
+  custom?: CustomGroup[];
   mealTypes: string[];
 }
 
@@ -25,12 +27,26 @@ interface FoodProperties {
   };
 }
 
+interface CustomGroup {
+  name: string;
+  items: CustomItem[];
+}
+
+interface CustomItem {
+  name: string;
+  available: boolean;
+  removed: boolean;
+}
+
 interface RawDish {
   id: number;
   name: string;
   category: string;
   price: string;
   currency: string;
+  inStock: boolean;
+  categories: any;
+  customizableList: any;
   description: string | null;
   photo1: string | null;
   photo2: string | null;
@@ -45,4 +61,17 @@ interface RawDish {
   menuType: string[];
 }
 
-export { Categories, Dish, RawDish, FoodProperties };
+interface CustomInStock {
+    [groupName: string]: {
+        [itemName: string]: boolean
+    }
+};
+
+interface InStockInfo {
+    [id: number]: {
+        inStock: boolean,
+        custom: CustomInStock
+    }
+};
+
+export type { Categories, Dish, RawDish, FoodProperties, CustomGroup, CustomItem, InStockInfo , CustomInStock};

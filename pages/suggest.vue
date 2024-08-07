@@ -177,7 +177,7 @@ async function share() {
     }
 
     &_go-back {
-        color: var(--dark-color);
+        color: #4300b8;
         background: var(--white-color);
         border: solid 1px var(--medium-color);
     }

@@ -31,7 +31,7 @@
 .orders {
 
   &__main {
-    margin-top: 13.4rem;
+    margin-top: 12rem;
   }
 
   &__complete {

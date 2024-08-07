@@ -3,4 +3,4 @@ interface Order {
   rest: string;
 }
 
-export { Order };
+export type { Order };

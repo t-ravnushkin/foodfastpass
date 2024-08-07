@@ -1,10 +1,22 @@
 <script setup lang="ts">
+import { Restaurant } from "~/modules/user-side/restaurants/types";
+import { Dish } from "../../types";
 
 const restaurantName = useRoute().params.restaurantName as string;
 
 const categories = useCategories(restaurantName);
 
-const { onFiltersChange } = useFilters();
+const allDishes = useDishes(restaurantName);
+
+const { cart, customItems, changeRestaurant } = useCartStore();
+
+changeRestaurant(restaurantName);
+
+const { chosenMealType, onFiltersChange } = useFilters();
+
+const mealTypes = useMenuTypes(restaurantName);
+
+// const mealTypes = useRestaurantByName(restaurantName).allMenuTypes;
 
 const menu = ref();
 
@@ -20,19 +32,16 @@ const menuScroll = createEventHook();
 
 const { height: headerHeight } = useElementBounding(header);
 
+provide("showDishCard", showDishCard);
+provide("showFilters", showFilters);
+provide("setScrollTop", setScrollTop);
+provide("onMenuScroll", menuScroll.on);
 
-provide('showDishCard', showDishCard);
-provide('showFilters', showFilters);
-provide('setScrollTop', setScrollTop);
-provide('onMenuScroll', menuScroll.on);
-
-
-useEventListener(menu, 'scroll', useThrottleFn(onMenuScroll, 100));
+useEventListener(menu, "scroll", useThrottleFn(onMenuScroll, 100));
 
 onFiltersChange(() => {
   onMenuScroll();
 });
-
 
 function showDishCard() {
   dishCard.value.showContent();
@@ -50,14 +59,16 @@ function onMenuScroll() {
   menuScroll.trigger(menu.value.scrollTop);
 }
 
+const currentDish = useCurrentDish();
+const customDish = useCustomDish();
+const isEmpty = computed(() => {
+  return mealTypes.value.length === 0;
+});
 </script>
 
 <template>
-  <article
-    ref="menu"
-    class="menu"
-  >
-
+  <MealMismatchModal />
+  <article ref="menu" class="menu">
     <TheMenuHeader
       ref="header"
       :restaurant-name="restaurantName"
@@ -69,33 +80,35 @@ function onMenuScroll() {
       v-model:are-filters-active="areFiltersActive"
     />
 
-    <MealType class="menu__meal"/>
+    <MealType class="menu__meal" :meal-types="mealTypes" />
 
     <ListOfCategories
+      :is-empty="isEmpty"
+      :all-dishes="allDishes"
       :categories="categories"
       class="menu__categories"
     />
 
-    <TheDishFilters
-      v-model:is-active="areFiltersActive"
-    />
+    <TheDishFilters v-model:is-active="areFiltersActive" />
 
-    <Teleport to="body">
-      <DishCard
-        ref="dishCard"
-        :dish="useCurrentDish()"
-      />
-    </Teleport>
+    <NewDishCard
+      @close="currentDish = null"
+      @customize="(dish) => (customDish = dish)"
+      :dish="currentDish"
+    />
+    <CustomizationCard v-model:dish="customDish" />
+
+    <!-- <Teleport to="body">
+      <DishCard ref="dishCard" :dish="useCurrentDish()" />
+    </Teleport> -->
 
     <OrderPlate />
 
-    <TheMenuFooter class="menu__footer"/>
-
+    <TheMenuFooter class="menu__footer" />
   </article>
 </template>
 
 <style scoped lang="scss">
-
 .menu {
   --header-height: v-bind(headerHeight);
 
@@ -119,7 +132,7 @@ function onMenuScroll() {
 
   &__categories {
     margin: 0 1.6rem 9.6rem 1.5rem;
+    margin-bottom: auto;
   }
 }
-
 </style>

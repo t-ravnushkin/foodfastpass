@@ -28,7 +28,7 @@ const props = defineProps<{
       </h3>
 
       <a
-        href="https://maps.app.goo.gl/DCKvy2BaQexrdn7n7?g_st=ic"
+        :href="restaurant.address"
         class="card__link"
         @click.stop
       >

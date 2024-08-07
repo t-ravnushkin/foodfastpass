@@ -1,6 +1,6 @@
 export default async function (uid: string, token: string, new_password: string) {
 
-  const { data } = useCustomFetch(
+  const { data, error } = useCustomFetch(
     '/auth/users/reset_password_confirm/',
     {
       method: 'POST',
@@ -13,5 +13,5 @@ export default async function (uid: string, token: string, new_password: string)
     },
   );
 
-  return data.value;
+  return { result: data.value, error };
 }

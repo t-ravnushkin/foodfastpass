@@ -1,0 +1,79 @@
+<script setup lang="ts">
+const props = defineProps<{
+  open: boolean;
+}>();
+const emits = defineEmits(["update:open", "close"]);
+
+function handleClose() {
+  emits("update:open", false);
+  emits("close");
+}
+</script>
+
+<template>
+  <Teleport to="body" v-if="open">
+    <div class="backdrop" @click="handleClose">
+      <div class="modal" @click.stop>
+        <p class="modal_text">
+          Error! Selected timeslot is no longer available. Please update the
+          page and select a new timeslot.
+        </p>
+        <button class="modal_button" @click="handleClose">
+          Update the page
+        </button>
+      </div>
+    </div>
+  </Teleport>
+</template>
+
+<style scoped lang="scss">
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  width: 291px;
+  height: 189px;
+  border-radius: 18px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 19px;
+  z-index: 5002;
+
+  &_text {
+    width: 100%;
+    color: #000;
+    font-family: Inter;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 22.5px */
+  }
+
+  &_button {
+    width: 100%;
+    height: 39px;
+    background: #d4d4d4;
+    color: #000;
+    font-family: Inter;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%; /* 21px */
+  }
+}
+</style>

@@ -24,3 +24,7 @@ logs
 
 # pwa
 sw.*
+
+# vscode settings and docker
+Dockerfile
+.vscode

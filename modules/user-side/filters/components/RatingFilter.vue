@@ -1,17 +1,15 @@
 <script setup lang="ts">
-
 interface Props {
   ratingValue: number;
 }
 
 interface Emits {
-  'update:ratingValue': [ value: number ];
+  "update:ratingValue": [value: number];
 }
 
 defineProps<Props>();
 
 const emits = defineEmits<Emits>();
-
 </script>
 
 <template>
@@ -19,14 +17,13 @@ const emits = defineEmits<Emits>();
     <p class="star-rating__name">Rating</p>
 
     <div class="star-rating__stars-container">
-
       <svg
         v-for="num in 5"
         :key="num"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         class="star-rating__star"
-        :class="{'star-rating__star_active': ratingValue >= num}"
+        :class="{ 'star-rating__star_active': ratingValue >= num }"
         @click="emits('update:ratingValue', num)"
       >
         <g>
@@ -50,13 +47,11 @@ const emits = defineEmits<Emits>();
       </svg>
 
       <p class="star-rating__label">&up</p>
-
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .star-rating {
   &__name {
     margin: 0 0 1.6rem 0;
@@ -75,21 +70,20 @@ const emits = defineEmits<Emits>();
     height: 2rem;
 
     fill: var(--white-color);
-    stroke: var(--dark-color);
+    stroke: #4300b8;
     stroke-width: 0.2rem;
 
-    transition: all ease .2s;
+    transition: all ease 0.2s;
 
     &_active {
-      fill: var(--dark-color);
+      fill: #4300b8;
     }
   }
 
   &__label {
     margin: 0 0 0 0.4rem;
     color: #000;
-    font:400 normal 1.6rem/1.5 Inter, sans-serif;
+    font: 400 normal 1.6rem/1.5 Inter, sans-serif;
   }
 }
-
 </style>

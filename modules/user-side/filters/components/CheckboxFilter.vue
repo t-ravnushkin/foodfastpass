@@ -66,7 +66,7 @@ const emits = defineEmits<Emits>();
       transition: all .2s ease;
 
       background: url('assets/icons/checkbox.svg') center/cover no-repeat;
-      border: 1px solid var(--dark-color);
+      border: 1px solid #4300b8;
       border-radius: 4px;
     }
 

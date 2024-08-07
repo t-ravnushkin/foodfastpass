@@ -1,86 +1,99 @@
 <script setup lang="ts">
+import bohGetUserToken from "../utils/bohGetUserToken";
+const email = ref("");
+const username = ref("");
+const password = ref("");
+const passwordHidden = ref(true);
 
-const email = ref('');
-const username = ref('');
-const password = ref('');
 
 const isSubmitReady = computed(() => {
-  const isNotEmpty = username.value !== ''
-    && password.value !== ''
-    /*&& email.value !== ''*/
+  const isNotEmpty = username.value !== "" && password.value !== "";
+  /*&& email.value !== ''*/
 
   // const isEmailValid = /^.+@.+$/g.test(email.value);
 
-  return isNotEmpty
-    /*&& isEmailValid;*/
+  return isNotEmpty;
+  /*&& isEmailValid;*/
 });
 
-
 function submit() {
-  if (!isSubmitReady)
-    return;
+  if (!isSubmitReady) return;
 
-  getUserToken(
-    username.value.trim(),
-    password.value.trim(),
-  ).then(() => {
-    navigateTo('/boh/orders');
+  bohGetUserToken(username.value.trim(), password.value.trim()).then(() => {
+    navigateTo("/boh/orders");
   });
-
 }
 </script>
 
 <template>
   <article class="auth">
-
     <header class="auth__header">
-      <MainLogo class="auth__logo"/>
+      <MainLogo class="auth__logo" />
       <p class="auth__logo-title">FoodFastPass</p>
     </header>
 
     <main class="auth__main">
-
       <h1 class="auth__heading">Log in</h1>
       <p class="auth__subtitle">Welcome back! Please enter your details.</p>
 
       <section class="auth__form">
-<!--        <div class="auth__section">
+        <!--        <div class="auth__section">
           <p class="auth__title">Email</p>
           <input v-model="email" type="email" placeholder="Enter your email" class="auth__field">
         </div>-->
 
         <div class="auth__section">
           <p class="auth__title">Username</p>
-          <input v-model="username" type="text" placeholder="Enter your username" class="auth__field">
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Enter your username"
+            class="auth__field"
+          />
         </div>
 
         <div class="auth__section">
           <p class="auth__title">Password</p>
-          <input v-model="password" type="password" placeholder="••••••••" class="auth__field">
+          <input
+            v-model="password"
+            :type="passwordHidden ? 'password' : 'text'"
+            placeholder="••••••••"
+            class="auth__field"
+          />
+          <EyeIcon
+          height="2.0rem"
+          :is-closed="!passwordHidden"
+          style="
+            margin-left: -3.5rem;
+            vertical-align: middle;
+            align-self: stretch;
+          "
+          @click="passwordHidden = !passwordHidden"
+        />
         </div>
       </section>
 
       <button
-        :class="['auth__log-in', {'auth__log-in_disabled': !isSubmitReady}]"
+        :class="['auth__log-in', { 'auth__log-in_disabled': !isSubmitReady }]"
         @click="submit"
       >
         Log in
       </button>
 
-      <p class="auth__bottom-text">For password and account management issues please contact our customer service.</p>
-
+      <p class="auth__bottom-text">
+        For any questions, please refer to our support service at hello@foodfastpass.ie
+      </p>
     </main>
 
-    <footer class="auth__footer">© 2023 FoodFastPass. All rights reserved.</footer>
-
+    <footer class="auth__footer">
+      © 2023 FoodFastPass. All rights reserved.
+    </footer>
   </article>
 </template>
 
 <style scoped lang="scss">
-
 .auth {
-
-  &__header{
+  &__header {
     position: fixed;
     top: 3.2rem;
     left: 3.2rem;
@@ -100,7 +113,6 @@ function submit() {
     color: var(--black-color);
     font: 600 normal 1.6rem Inter, sans-serif;
   }
-
 
   &__main {
     max-width: 36rem;
@@ -127,7 +139,6 @@ function submit() {
   }
 
   &__section {
-
   }
 
   &__title {
@@ -147,7 +158,7 @@ function submit() {
     border: var(--light-color) 1px solid;
     outline-color: transparent;
 
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &:focus {
       outline-color: var(--dark-color);
@@ -186,5 +197,4 @@ function submit() {
     letter-spacing: -0.064rem;
   }
 }
-
 </style>
